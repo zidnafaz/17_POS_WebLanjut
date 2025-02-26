@@ -29,6 +29,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('penjualan') ? 'active' : '' }}" href="{{ route('selling.index') }}">Penjualan</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('Level') ? 'active' : '' }}" href="{{ url('/Level') }}">Level</a>
+                    </li>
                 </ul>
             </div>
         </div>
