@@ -23,8 +23,11 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('products') || Request::is('category/*') ? 'active' : '' }}" href="{{ route('products.index') }}">Products</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link {{ Request::is('user/*') ? 'active' : '' }}" href="{{ url('/user/1/name/Faza') }}">User</a>
+                    </li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('user') ? 'active' : '' }}" href="{{ url('/user') }}">User</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('penjualan') ? 'active' : '' }}" href="{{ route('selling.index') }}">Penjualan</a>

@@ -16,7 +16,7 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/category/{category}', [ProductController::class, 'show'])->name('products.category');
 
 // Route User
-Route::get('/user/{id}/name/{name}', [UserController::class, 'show'])->name('user.show');
+// Route::get('/user/{id}/name/{name}', [UserController::class, 'show'])->name('user.show');
 
 // Route Penjualan (Selling)
 Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.index');
@@ -24,5 +24,8 @@ Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.ind
 // Route Level
 Route::get('/Level', [LevelController::class, 'index']);
 
-// Kategori
+// Route Kategori
 Route::get('/kategori', [KategoriController::class, 'index']);
+
+// ORM
+Route::get('/user', [UserController::class, 'index']);
