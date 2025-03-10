@@ -15,8 +15,8 @@ class UserController extends Controller
 
     public function index()
     {
-        // $user = UserModel::all(); // Mengambil semua data dari tabel m_user
-        // return view('user', ['data' => $user]);
+        $user = UserModel::all(); // Mengambil semua data dari tabel m_user
+        return view('user', ['data' => $user]);
 
         // tambah data user dengan Eloquent Model
         // $data = [
@@ -67,7 +67,20 @@ class UserController extends Controller
 
         // $user = UserModel::findOrFail(1);
 
-        $user = UserModel::where('username', 'manager-9')->firstOrFail();
-        return view('user', ['data' => $user]);
+        // $user = UserModel::where('username', 'manager-9')->firstOrFail();
+
+
+        // $user = UserModel::where('level_id', 2)->count();
+        // dd($user);
+        // return view('user', ['data' => $user]);
     }
+
+    public function countByLevel()
+    {
+        $levelId = 2; // Bisa diubah sesuai kebutuhan
+        $userCount = UserModel::where('level_id', $levelId)->count();
+
+        return view('user_count', compact('userCount', 'levelId'));
+    }
+
 }

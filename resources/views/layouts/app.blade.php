@@ -30,6 +30,9 @@
                         <a class="nav-link {{ Request::is('user') ? 'active' : '' }}" href="{{ url('/user') }}">User</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ Request::is('user_count') ? 'active' : '' }}" href="{{ url('/user_count') }}">Jumlah User</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ Request::is('penjualan') ? 'active' : '' }}" href="{{ route('selling.index') }}">Penjualan</a>
                     </li>
                     <li class="nav-item">

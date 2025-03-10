@@ -29,3 +29,6 @@ Route::get('/kategori', [KategoriController::class, 'index']);
 
 // ORM
 Route::get('/user', [UserController::class, 'index']);
+
+// Route user_count
+Route::get('/user_count', [UserController::class, 'countByLevel']);
