@@ -15,8 +15,8 @@ class UserController extends Controller
 
     public function index()
     {
-        $user = UserModel::all(); // Mengambil semua data dari tabel m_user
-        return view('user', ['data' => $user]);
+        // $user = UserModel::all(); // Mengambil semua data dari tabel m_user
+        // return view('user', ['data' => $user]);
 
         // tambah data user dengan Eloquent Model
         // $data = [
@@ -145,6 +145,12 @@ class UserController extends Controller
         // $user->wasChanged(['username', 'level_id']);
         // $user->wasChanged('nama');
         // $user->wasChanged('nama', 'username');
+
+        // $user = UserModel::with('level')->get();
+        // dd($user);
+
+        $user = UserModel::with('level')->get();
+        return view('user', ['data' => $user]);
     }
 
     public function countByLevel()
