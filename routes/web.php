@@ -32,3 +32,14 @@ Route::get('/user', [UserController::class, 'index']);
 
 // Route user_count
 Route::get('/user_count', [UserController::class, 'countByLevel']);
+
+// Route Tambah User
+Route::get('/user/tambah', [UserController::class, 'tambah']);
+Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
+
+// Route Ubah Data User
+Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
+Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
+
+// Route Untuk Delete User
+Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);

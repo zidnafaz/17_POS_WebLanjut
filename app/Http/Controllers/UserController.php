@@ -15,8 +15,8 @@ class UserController extends Controller
 
     public function index()
     {
-        // $user = UserModel::all(); // Mengambil semua data dari tabel m_user
-        // return view('user', ['data' => $user]);
+        $user = UserModel::all(); // Mengambil semua data dari tabel m_user
+        return view('user', ['data' => $user]);
 
         // tambah data user dengan Eloquent Model
         // $data = [
@@ -130,21 +130,21 @@ class UserController extends Controller
         // $user->isClean();
         // dd($user->isDirty());
 
-        $user = UserModel::create([
-            'username' => 'manager-55',
-            'nama' => 'Manager 55',
-            'password' => Hash::make('12345'),
-            'level_id' => 2
-        ]);
+        // $user = UserModel::create([
+        //     'username' => 'manager-55',
+        //     'nama' => 'Manager 55',
+        //     'password' => Hash::make('12345'),
+        //     'level_id' => 2
+        // ]);
 
-        $user->username = 'manager-12';
-        $user->save();
+        // $user->username = 'manager-12';
+        // $user->save();
 
-        $user->wasChanged();
-        $user->wasChanged('username');
-        $user->wasChanged(['username', 'level_id']);
-        $user->wasChanged('nama');
-        $user->wasChanged('nama', 'username');
+        // $user->wasChanged();
+        // $user->wasChanged('username');
+        // $user->wasChanged(['username', 'level_id']);
+        // $user->wasChanged('nama');
+        // $user->wasChanged('nama', 'username');
     }
 
     public function countByLevel()
@@ -155,4 +155,45 @@ class UserController extends Controller
         return view('user_count', compact('userCount', 'levelId'));
     }
 
+    public function tambah()
+    {
+        return view('user_tambah');
+    }
+
+    public function tambah_simpan(Request $request)
+    {
+        UserModel::create([
+            'username' => $request->username,
+            'nama' => $request->nama,
+            'password' => Hash::make($request->password),
+            'level_id' => $request->level_id
+        ]);
+
+        return redirect('/user');
+    }
+
+    public function ubah($id)
+    {
+        $user = UserModel::find($id);
+        return view('user_ubah', ['data' => $user]);
+    }
+
+    public function ubah_simpan(Request $request, $id)
+    {
+        $user = UserModel::find($id);
+
+        $user->username = $request->username;
+        $user->nama = $request->nama;
+        $user->password = Hash::make($request->password);
+        $user->level_id = $request->level_id;
+        $user->save();
+        return redirect('/user');
+    }
+
+    public function hapus($id) {
+        $user = UserModel::find($id);
+        $user->delete();
+
+        return redirect('/user');
+    }
 }
