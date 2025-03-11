@@ -90,18 +90,61 @@ class UserController extends Controller
         //     ]
         // );
 
-        $user = UserModel::firstOrNew(
-            [
-                'username' => 'manager-33',
-                'nama' => 'Manager Tiga Tiga',
-                'password' => Hash::make('12345'),
-                'level_id' => 2
-            ]
-        );
+        // $user = UserModel::firstOrNew(
+        //     [
+        //         'username' => 'manager-33',
+        //         'nama' => 'Manager Tiga Tiga',
+        //         'password' => Hash::make('12345'),
+        //         'level_id' => 2
+        //     ]
+        // );
 
+        // $user->save();
+
+        // return view('user', ['data' => $user]);
+
+        // $user = UserModel::firstOrNew(
+        //     [
+        //         'username' => 'manager-55',
+        //         'nama' => 'Manager 55',
+        //         'password' => Hash::make('12345'),
+        //         'level_id' => 2
+        //     ]
+        // );
+
+        // $user->username = 'manager-56';
+
+        // $user->isDirty();
+        // $user->isDirty('username');
+        // $user->isDirty('nama');
+        // $user->isDirty(['nama', 'username']);
+
+        // $user->isClean();
+        // $user->isClean('username');
+        // $user->isClean('nama');
+        // $user->isClean(['nama', 'username']);
+
+        // $user->save();
+
+        // $user->isDirty();
+        // $user->isClean();
+        // dd($user->isDirty());
+
+        $user = UserModel::create([
+            'username' => 'manager-55',
+            'nama' => 'Manager 55',
+            'password' => Hash::make('12345'),
+            'level_id' => 2
+        ]);
+
+        $user->username = 'manager-12';
         $user->save();
 
-        return view('user', ['data' => $user]);
+        $user->wasChanged();
+        $user->wasChanged('username');
+        $user->wasChanged(['username', 'level_id']);
+        $user->wasChanged('nama');
+        $user->wasChanged('nama', 'username');
     }
 
     public function countByLevel()
