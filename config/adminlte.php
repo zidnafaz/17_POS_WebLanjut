@@ -327,6 +327,11 @@ return [
             'label' => 4,
             'label_color' => 'success',
         ],
+        [
+            'text' => 'Manage Kategori',
+            'url' => '/kategori',
+            'icon' => 'fas fa-fw fa-table-columns',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',

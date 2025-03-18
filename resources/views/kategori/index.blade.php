@@ -8,9 +8,9 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="mb-0">Manage Kategori</h2>
-            {{-- <a href="{{ url('/kategori/create') }}" class="btn btn-primary">
+            <a href="{{ url('/kategori/create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Tambah Kategori
-            </a> --}}
+            </a>
         </div>
 
         <div class="card shadow-sm">
