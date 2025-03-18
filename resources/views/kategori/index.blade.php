@@ -4,6 +4,10 @@
 @section('content_header_title', 'Home')
 @section('content_header_subtitle', 'Kategori')
 
+@push('css')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+@endpush
+
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -16,7 +20,7 @@
         <div class="card shadow-sm">
             <div class="card-header bg-dark text-white">Daftar Kategori</div>
             <div class="card-body">
-                {{ $dataTable->table(['class' => 'table table-striped table-bordered']) }}
+                {{ $dataTable->table(['class' => 'table table-striped table-bordered text-center align-middle']) }}
             </div>
         </div>
     </div>

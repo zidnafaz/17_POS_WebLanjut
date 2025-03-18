@@ -24,9 +24,14 @@ Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.ind
 // Route Level
 Route::get('/Level', [LevelController::class, 'index']);
 
+// Route Kategori
 Route::get('/kategori', [KategoriController::class, 'index']);
 Route::post('/kategori', [KategoriController::class, 'store']);
 Route::get('/kategori/create', [KategoriController::class, 'create']);
+Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
+Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
+Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 
 // ORM
 Route::get('/user', [UserController::class, 'index']);
