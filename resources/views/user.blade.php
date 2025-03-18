@@ -28,8 +28,8 @@
                     <td>{{ $d->level->level_kode }}</td>
                     <td>{{ $d->level->level_nama }}</td>
                     <td>
-                        <a href="/POS/public/user/ubah/{{ $d->user_id }}" class="btn btn-warning btn-sm">Ubah</a>
-                        <a href="/POS/public/user/hapus/{{ $d->user_id }}" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna dengan username ' + '{{ $d->username }}')">Hapus</a>
+                        <a href="/ubah/{{ $d->user_id }}" class="btn btn-warning btn-sm">Ubah</a>
+                        <a href="/hapus/{{ $d->user_id }}" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna dengan username ' + '{{ $d->username }}')">Hapus</a>
                     </td>
                 </tr>
                 @endforeach

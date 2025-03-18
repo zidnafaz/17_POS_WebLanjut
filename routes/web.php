@@ -24,8 +24,9 @@ Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.ind
 // Route Level
 Route::get('/Level', [LevelController::class, 'index']);
 
-// Route Kategori
 Route::get('/kategori', [KategoriController::class, 'index']);
+Route::post('/kategori', [KategoriController::class, 'store']);
+Route::get('/kategori/create', [KategoriController::class, 'create']);
 
 // ORM
 Route::get('/user', [UserController::class, 'index']);

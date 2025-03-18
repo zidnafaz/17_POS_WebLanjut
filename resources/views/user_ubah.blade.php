@@ -5,7 +5,7 @@
     <h2>Form Ubah Data User</h2>
     <a href="/user" class="btn btn-secondary mb-3">Kembali</a>
 
-    <form method="POST" action="/POS/public/user/ubah_simpan/{{ $data->user_id }}">
+    <form method="POST" action="/ubah_simpan/{{ $data->user_id }}">
         @csrf
         @method('PUT')
 

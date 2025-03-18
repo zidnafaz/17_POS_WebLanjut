@@ -7,7 +7,7 @@
 
     <div class="card">
         <div class="card-body">
-                <form method="post" action="/POS/public/user/tambah_simpan">
+                <form method="post" action="/tambah_simpan">
 
                 @csrf
 
