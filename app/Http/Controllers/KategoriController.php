@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\KategoriDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class KategoriController extends Controller
 {
-    public function index()
+    public function index(KategoriDataTable $dataTable)
     {
         // $data = [
         //     [
@@ -33,7 +34,9 @@ class KategoriController extends Controller
 
         // return view('kategori', compact('message'));
 
-        $data = DB::select('select * from m_kategori');
-        return view('kategori', ['data' => $data]);
+        // $data = DB::select('select * from m_kategori');
+        // return view('kategori', ['data' => $data]);
+
+        return $dataTable->render('kategori.index');
     }
 }

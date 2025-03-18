@@ -7,6 +7,8 @@
     @hasSection('subtitle') | @yield('subtitle') @endif
 @stop
 
+@vite('resources/js/app.js')
+
 {{-- Extend and customize the page content header --}}
 
 @section('content_header')
@@ -30,6 +32,7 @@
     @yield('content_body')
 @stop
 
+
 {{-- Create a common footer --}}
 
 @section('footer')
@@ -44,21 +47,24 @@
     </strong>
 @stop
 
+
 {{-- Add common Javascript/Jquery code --}}
 
+
+
 @push('js')
-<script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
 
-    $(document).ready(function() {
-        // Add your common script logic here...
-    });
-
-</script>
 @endpush
+
+@stack('scripts')
+
 
 {{-- Add common CSS customizations --}}
 
 @push('css')
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" />
+
 <style type="text/css">
 
     {{-- You can add AdminLTE customizations here --}}
@@ -70,5 +76,7 @@
         font-weight: 600;
     }
     */
+
 </style>
+
 @endpush
