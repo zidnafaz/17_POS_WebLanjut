@@ -29,18 +29,20 @@ class KategoriDataTable extends DataTable
                 return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '-';
             })
             ->addColumn('aksi', function ($row) {
-                return '<div class="d-flex justify-content-center">
-                        <a href="' . route('kategori.edit', $row->kategori_id) . '" class="btn btn-warning btn-sm me-2">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <form action="' . route('kategori.destroy', $row->kategori_id) . '" method="POST" class="d-inline" onsubmit="return confirm(\'Yakin ingin menghapus kategori ini?\')">
-                            ' . csrf_field() . '
-                            ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </form>
-                    </div>';
+                return '
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <a href="' . route('kategori.edit', $row->kategori_id) . '" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form action="' . route('kategori.destroy', $row->kategori_id) . '" method="POST" class="d-inline" onsubmit="return confirm(\'Yakin ingin menghapus kategori ini?\')">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>';
+
             })
             ->rawColumns(['aksi']) // Pastikan rawColumns digunakan agar HTML dirender dengan benar
             ->setRowId('kategori_id');

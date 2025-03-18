@@ -20,7 +20,7 @@
         <div class="card shadow-sm">
             <div class="card-header bg-dark text-white">Daftar Kategori</div>
             <div class="card-body">
-                {{ $dataTable->table(['class' => 'table table-striped table-bordered text-center align-middle']) }}
+                {{ $dataTable->table(['class' => 'table table-hover table-bordered text-nowrap']) }}
             </div>
         </div>
     </div>
