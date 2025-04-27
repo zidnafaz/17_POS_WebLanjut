@@ -158,10 +158,13 @@ class UserController extends Controller
 
     public function countByLevel()
     {
-        $levelId = 2; // Bisa diubah sesuai kebutuhan
-        $userCount = UserModel::where('level_id', $levelId)->count();
+        // Mengambil jumlah user dikelompokkan berdasarkan level_id dengan nama level
+        $userCounts = UserModel::join('m_level', 'm_user.level_id', '=', 'm_level.level_id')
+            ->selectRaw('m_user.level_id, m_level.level_nama, count(*) as total')
+            ->groupBy('m_user.level_id', 'm_level.level_nama')
+            ->get();
 
-        return view('user.user_count', compact('userCount', 'levelId'));
+        return view('user.user_count', compact('userCounts'));
     }
 
     public function tambah()
@@ -199,7 +202,8 @@ class UserController extends Controller
         return redirect('/user');
     }
 
-    public function hapus($id) {
+    public function hapus($id)
+    {
         $user = UserModel::find($id);
         $user->delete();
 
@@ -276,20 +280,22 @@ class UserController extends Controller
         ], 400);
     }
 
-    public function edit_ajax(String $id){
+    public function edit_ajax(string $id)
+    {
         $user = UserModel::find($id);
         $level = LevelModel::select('level_id', 'level_nama')->get();
 
         return view('user.edit_ajax', ['user' => $user, 'level' => $level]);
     }
 
-    public function update_ajax(Request $request, String $id){
+    public function update_ajax(Request $request, string $id)
+    {
         // cek apakah request dari ajax
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_id' => 'required|integer',
-                'username' => 'required|max:20|unique:m_user,username,'.$id.',user_id',
-                'nama'     => 'required|max:100',
+                'username' => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
+                'nama' => 'required|max:100',
                 'password' => 'nullable|min:6|max:20'
             ];
 
@@ -298,25 +304,25 @@ class UserController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status'   => false,    // respon json, true: berhasil, false: gagal
-                    'message'  => 'Validasi gagal.',
+                    'status' => false,    // respon json, true: berhasil, false: gagal
+                    'message' => 'Validasi gagal.',
                     'msgField' => $validator->errors()  // menunjukkan field mana yang error
                 ]);
             }
 
             $check = UserModel::find($id);
             if ($check) {
-                if(!$request->filled('password') ){ // jika password tidak diisi, maka hapus dari request
+                if (!$request->filled('password')) { // jika password tidak diisi, maka hapus dari request
                     $request->request->remove('password');
                 }
                 $check->update($request->all());
                 return response()->json([
-                    'status'  => true,
+                    'status' => true,
                     'message' => 'Data berhasil diupdate'
                 ]);
-            } else{
+            } else {
                 return response()->json([
-                    'status'  => false,
+                    'status' => false,
                     'message' => 'Data tidak ditemukan'
                 ]);
             }
@@ -324,22 +330,24 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function confirm_ajax(String $id){
+    public function confirm_ajax(string $id)
+    {
         $user = UserModel::find($id);
         return view('user.confirm_ajax', ['user' => $user]);
     }
 
-    public function delete_ajax(Request $request, String $id){
+    public function delete_ajax(Request $request, string $id)
+    {
         $user = UserModel::find($id);
         $user->delete();
         if ($user) {
             return response()->json([
-                'status'  => true,
+                'status' => true,
                 'message' => 'Data berhasil dihapus'
             ]);
-        }else{
+        } else {
             return response()->json([
-                'status'  => false,
+                'status' => false,
                 'message' => 'Data tidak ditemukan'
             ]);
         }

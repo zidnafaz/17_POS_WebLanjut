@@ -303,99 +303,59 @@ return [
         [
             'type' => 'navbar-search',
             'text' => 'search',
-            'topnav_right' => true,
+            'topnav_right' => false,
+            'icon' => 'fas fa-fw fa-search', // Ikon untuk search
         ],
         [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
+            'icon' => 'fas fa-fw fa-expand-arrows-alt', // Ikon untuk fullscreen
         ],
 
         // Sidebar items:
         [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
+            'icon' => 'fas fa-fw fa-search', // Ikon untuk search
         ],
         [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
+            'text' => 'Dashboard',
+            'url' => '/',
+            'icon' => 'fas fa-fw fa-tachometer-alt', // Ikon untuk Dashboard
         ],
+        ['header' => 'Data Produk'],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
-        ],
-        [
-            'text' => 'Manage Kategori',
+            'text' => 'Kategori Produk',
             'url' => '/kategori',
-            'icon' => 'fas fa-fw fa-table-columns',
-        ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-th-large', // Ikon untuk kategori produk (grid layout)
         ],
         [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
+            'text' => 'Daftar Produk',
+            'url' => '/daftar_produk',
+            'icon' => 'fas fa-fw fa-cogs', // Ikon untuk daftar produk (pengelolaan produk)
+        ],
+
+        ['header' => 'Data User'],
+        [
+            'text' => 'Daftar User',
+            'url' => '/user',
+            'icon' => 'fas fa-fw fa-users', // Ikon untuk Daftar User
         ],
         [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
+            'text' => 'Level User',
+            'url' => '/level',
+            'icon' => 'fas fa-fw fa-user-cog', // Ikon untuk Level User
         ],
-        ['header' => 'labels'],
+        ['header' => 'Data Transaksi'],
         [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
+            'text' => 'Stok Barang',
+            'url' => '/stok',
+            'icon' => 'fas fa-fw fa-cogs', // Ikon untuk Stok Barang
         ],
         [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
+            'text' => 'Transaksi Penjualan',
+            'url' => '/transaksi',
+            'icon' => 'fas fa-fw fa-cash-register', // Ikon untuk Transaksi Penjualan
         ],
     ],
 
