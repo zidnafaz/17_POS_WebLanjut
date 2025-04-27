@@ -19,7 +19,19 @@ Route::get('/category/{category}', [ProductController::class, 'show'])->name('pr
 Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.index');
 
 // Route Level
-Route::get('/Level', [LevelController::class, 'index']);
+Route::prefix('level')->group(function () {
+    Route::get('/', [LevelController::class, 'index']);
+    Route::get('/getLevels', [LevelController::class, 'getLevels'])->name('level.getLevels');
+
+    Route::get('/create_ajax', [LevelController::class, 'create_ajax'])->name('level.create_ajax');
+    Route::post('/store_ajax', [LevelController::class, 'store_ajax'])->name('level.store_ajax');
+
+    Route::get('/{id}/edit_ajax', [LevelController::class, 'edit_ajax'])->name('level.edit_ajax');
+    Route::put('/{id}/update_ajax', [LevelController::class, 'update_ajax'])->name('level.update_ajax');
+
+    Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax'])->name('level.confirm_ajax');
+    Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax'])->name('level.delete_ajax');
+});
 
 // Route Kategori
 Route::prefix('kategori')->group(function () {
