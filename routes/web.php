@@ -33,7 +33,6 @@ Route::prefix('level')->group(function () {
     Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax'])->name('level.delete_ajax');
 });
 
-// Route Kategori
 Route::prefix('kategori')->group(function () {
     Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
     Route::post('/', [KategoriController::class, 'store'])->name('kategori.store');
@@ -41,6 +40,17 @@ Route::prefix('kategori')->group(function () {
     Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
     Route::put('/{id}', [KategoriController::class, 'update'])->name('kategori.update');
     Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+
+    Route::get('/ajax', [KategoriController::class, 'ajaxKategori'])->name('kategori.ajax');
+
+    Route::get('/create_ajax', [KategoriController::class, 'create_ajax'])->name('kategori.create_ajax');
+    Route::post('/store_ajax', [KategoriController::class, 'store_ajax'])->name('kategori.store_ajax');
+
+    Route::get('/{id}/edit_ajax', [KategoriController::class, 'edit_ajax'])->name('kategori.edit_ajax');
+    Route::put('/{id}/update_ajax', [KategoriController::class, 'update_ajax'])->name('kategori.update_ajax');
+
+    Route::get('/{id}/confirm_ajax', [KategoriController::class, 'confirm_ajax'])->name('kategori.confirm_ajax');
+    Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax'])->name('kategori.delete_ajax');
 });
 
 // Route User

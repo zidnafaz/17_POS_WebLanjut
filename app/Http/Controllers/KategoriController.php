@@ -41,28 +41,33 @@ class KategoriController extends Controller
         return $dataTable->render('kategori.index');
     }
 
-    public function create()
+    public function create_ajax()
     {
-        return view('kategori.create');
+        return view('kategori.create_ajax');
     }
 
-    public function store(Request $request)
+    public function store_ajax(Request $request)
     {
+        $request->validate([
+            'kategori_kode' => 'required|string|max:255',
+            'kategori_nama' => 'required|string|max:255',
+        ]);
+
         KategoriModel::create([
             'kategori_kode' => $request->kategori_kode,
             'kategori_nama' => $request->kategori_nama,
         ]);
 
-        return redirect('/kategori');
+        return response()->json(['success' => true]);
     }
 
-    public function edit($id)
+    public function edit_ajax($id)
     {
         $kategori = KategoriModel::findOrFail($id);
-        return view('kategori.edit', compact('kategori'));
+        return view('kategori.edit_ajax', compact('kategori'));
     }
 
-    public function update(Request $request, $id)
+    public function update_ajax(Request $request, $id)
     {
         $request->validate([
             'kategori_kode' => 'required|string|max:255',
@@ -75,15 +80,26 @@ class KategoriController extends Controller
             'kategori_nama' => $request->kategori_nama,
         ]);
 
-        return redirect('/kategori')->with('success', 'Kategori berhasil diperbarui.');
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)
     {
+        //
+    }
+
+    public function confirm_ajax($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        return view('kategori.confirm_ajax', compact('kategori'));
+    }
+
+    public function delete_ajax($id)
+    {
         $kategori = KategoriModel::findOrFail($id);
         $kategori->delete();
 
-        return redirect('/kategori')->with('success', 'Kategori berhasil dihapus.');
+        return response()->json(['success' => true]);
     }
 
 }
