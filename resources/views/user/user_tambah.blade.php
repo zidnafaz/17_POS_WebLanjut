@@ -5,6 +5,8 @@
 
     <h2>Form Tambah Data User</h2>
 
+    <a href="{{ url('user') }}" class="btn btn-secondary mb-3">Kembali</a>
+
     <div class="card">
         <div class="card-body">
                 <form method="post" action="/tambah_simpan">

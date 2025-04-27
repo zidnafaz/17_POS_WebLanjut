@@ -32,19 +32,34 @@ Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('ka
 Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
 Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 
-// ORM
-Route::get('/user', [UserController::class, 'index']);
+Route::prefix('user')->group(function () {
+    // Main user route
+    Route::get('/', [UserController::class, 'index']);
+    Route::get('/getUsers', [UserController::class, 'getUsers'])->name('user.getUsers');
 
-// Route user_count
-Route::get('/user_count', [UserController::class, 'countByLevel']);
+    // User count route
+    Route::get('/count', [UserController::class, 'countByLevel']);
 
-// Route Tambah User
-Route::get('/user/tambah', [UserController::class, 'tambah']);
-Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
+    // Add user routes
+    Route::get('/tambah', [UserController::class, 'tambah']);
+    Route::post('/tambah_simpan', [UserController::class, 'tambah_simpan']);
 
-// Route Ubah Data User
-Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
-Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
+    // Edit user routes
+    Route::get('/ubah/{id}', [UserController::class, 'ubah']);
+    Route::put('/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
 
-// Route Untuk Delete User
-Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+    // Delete user route
+    Route::get('/hapus/{id}', [UserController::class, 'hapus']);
+
+    // Ajax Route
+    Route::get('/create_ajax', [UserController::class, 'create_ajax'])->name('user.create_ajax');
+    Route::post('/store_ajax', [UserController::class, 'store_ajax'])->name('user.store_ajax');
+
+    // Ajax Edit
+    Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax'])->name('user.edit_ajax');
+    Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax'])->name('user.update_ajax');
+
+    // Ajax Delete
+    Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax'])->name('user.confirm_ajax');
+    Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax'])->name('user.delete_ajax');
+});
