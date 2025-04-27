@@ -7,7 +7,7 @@
     <h1>Daftar Kategori Produk</h1>
     <div class="category-buttons">
         @foreach ($categories as $category)
-            <a href="{{ url('/product/' . $category->kategori_kode) }}" class="btn btn-primary m-1">
+            <a href="{{ url('products/' . $category->kategori_kode) }}" class="btn btn-primary m-1">
                 {{ $category->kategori_nama }}
             </a>
         @endforeach

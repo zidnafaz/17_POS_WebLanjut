@@ -6,7 +6,7 @@
 
 @section('content')
     <h1>Produk dalam Kategori: {{ ucfirst(str_replace('-', ' ', $category)) }}</h1>
-    <a href="{{ url('/product') }}" class="btn btn-secondary mb-3">Kembali ke Daftar Kategori</a>
+    <a href="{{ url('/products') }}" class="btn btn-secondary mb-3">Kembali ke Daftar Kategori</a>
 
     @if ($products->isEmpty())
         <p>Tidak ada produk dalam kategori ini.</p>
@@ -23,9 +23,9 @@
             <tbody>
                 @foreach ($products as $product)
                     <tr>
-                        <td>{{ $product->nama_barang ?? 'N/A' }}</td>
+                        <td>{{ $product->barang_nama ?? 'N/A' }}</td>
                         <td>{{ $product->kategori->kategori_nama ?? 'N/A' }}</td>
-                        <td>{{ number_format($product->harga ?? 0, 0, ',', '.') }}</td>
+                        <td>{{ number_format($product->harga_jual ?? 0, 0, ',', '.') }}</td>
                         <td>{{ $product->stok ?? 0 }}</td>
                     </tr>
                 @endforeach

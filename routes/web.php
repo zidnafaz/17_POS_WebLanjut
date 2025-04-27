@@ -12,8 +12,10 @@ use App\Http\Controllers\SellingController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Route Products
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/category/{category}', [ProductController::class, 'show'])->name('products.category');
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/{category}', [ProductController::class, 'show'])->name('products.category');
+});
 
 // Route Penjualan (Selling)
 Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.index');
