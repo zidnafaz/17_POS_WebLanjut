@@ -26,6 +26,19 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
 
+                {{-- Filter --}}
+                <div class="row align-items-center mb-3">
+                    <label class="col-md-1 col-form-label">Filter:</label>
+                    <div class="col-md-3">
+                        <select class="form-select" name="level_id" id="level_id" required>
+                            <option value="">-- Semua --</option>
+                            @foreach ($level_id as $item)
+                                <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 {{-- Table Level --}}
                 <div class="table-responsive">
                     <table id="table_level" class="table table-bordered table-hover align-middle">

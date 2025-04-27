@@ -1,11 +1,10 @@
-{{-- resources/views/level.blade.php --}}
+{{-- resources/views/layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Kategori')
 
 @section('content')
-    <div class="container">
-        <h2>Kategori</h2>
+    <div class="container-fluid">
 
         @if(isset($message))
             <div class="alert alert-success">

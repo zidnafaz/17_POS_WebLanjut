@@ -11,7 +11,8 @@ class LevelController extends Controller
 {
     public function index()
     {
-        return view('level.level');
+        $level_id = LevelModel::all(); // Sesuaikan dengan model level Anda
+        return view('level.level', compact('level_id'));
     }
 
     public function getLevels(Request $request)

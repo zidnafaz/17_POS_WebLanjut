@@ -4,21 +4,22 @@
 @section('title', 'User Profile')
 
 @section('content')
+
+    <h2>Data User</h2>
+
     <div class="container-fluid">
 
         {{-- Card Utama --}}
         <div class="card shadow-sm border-0 mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title mb-0">Data User</h3>
-                <div>
-                    <a href="{{ url('user/tambah') }}" class="btn btn-primary" style="margin-left: 5px;">
+            <div class="card-header">
+                <div class="card-tools float-end">
+                    <a href="{{ url('user/tambah') }}" class="btn btn-primary me-2">
                         <i class="fas fa-plus me-1"></i> Tambah User
                     </a>
-                    <a href="{{ url('user/count') }}" class="btn btn-primary" style="margin-left: 5px;">
+                    <a href="{{ url('user/count') }}" class="btn btn-info me-2">
                         <i class="fas fa-chart-bar me-1"></i> Count
                     </a>
-                    <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-success"
-                        style="margin-left: 5px;">
+                    <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-success">
                         <i class="fas fa-plus-circle me-1"></i> Tambah via Ajax
                     </button>
                 </div>
