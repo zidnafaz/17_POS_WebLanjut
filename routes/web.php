@@ -13,8 +13,13 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Route Products
 Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/', [ProductController::class, 'dataTableIndex'])->name('products.index');
     Route::get('/{category}', [ProductController::class, 'show'])->name('products.category');
+    // Route::get('/data', [ProductController::class, 'dataTableAjax'])->name('products.data');
+
+    Route::get('/{id}/manage', [ProductController::class, 'manage'])->name('products.manage');
+    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::get('/{id}/confirm', [ProductController::class, 'confirm'])->name('products.confirm');
 });
 
 // Route Penjualan (Selling)
