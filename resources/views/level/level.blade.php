@@ -92,7 +92,12 @@
                             }
                         },
                         error: function() {
-                            alert('Terjadi kesalahan saat menyimpan data.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat menyimpan data.',
+                    confirmButtonText: 'OK'
+                });
                         }
                     });
                 });
@@ -138,7 +143,12 @@
                             }
                         },
                         error: function() {
-                            alert('Terjadi kesalahan saat mengupdate data.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat mengupdate data.',
+                    confirmButtonText: 'OK'
+                });
                         }
                     });
                 });
@@ -157,14 +167,24 @@
                                 $('#table_level').DataTable().ajax.reload();
                                 alert(response.message);
                             } else {
-                                alert(response.message);
-                            }
-                        },
-                        error: function() {
-                            alert('Terjadi kesalahan saat menghapus data.');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            });
                         }
-                    });
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan saat menghapus data.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
+            });
 
             }).fail(function() {
                 alert('Gagal memuat modal.');
