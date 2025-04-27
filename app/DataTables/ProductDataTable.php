@@ -24,9 +24,9 @@ class ProductDataTable extends DataTable
             ->addColumn('aksi', function ($row) {
                 $manageUrl = url('products/' . $row->kategori_kode);
 
-                return '
+return '
                     <div class="d-flex justify-content-center" style="white-space: nowrap;">
-                        <a href="' . $manageUrl . '" class="btn btn-sm btn-info" style="margin-left: 5px;">
+                        <a href="' . $manageUrl . '" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-info" style="margin-left: 5px;">
                             <i class="fas fa-cogs"></i> Kelola Produk
                         </a>
                     </div>
