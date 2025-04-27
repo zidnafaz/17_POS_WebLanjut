@@ -102,4 +102,9 @@ class KategoriController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function detail_ajax($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        return view('kategori.detail_ajax', compact('kategori'));
+    }
 }

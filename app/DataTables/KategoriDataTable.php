@@ -8,8 +8,6 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class KategoriDataTable extends DataTable
@@ -22,27 +20,26 @@ class KategoriDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->editColumn('created_at', function ($row) {
-                return $row->created_at ? $row->created_at->format('d M Y H:i') : '-';
-            })
-            ->editColumn('updated_at', function ($row) {
-                return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '-';
-            })
             ->addColumn('aksi', function ($row) {
+                $detailUrl = route('kategori.detail_ajax', $row->kategori_id);
                 $editUrl = route('kategori.edit_ajax', $row->kategori_id);
                 $deleteUrl = route('kategori.confirm_ajax', $row->kategori_id);
-                return '
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <button onclick="modalAction(\'' . $editUrl . '\')" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button onclick="modalAction(\'' . $deleteUrl . '\')" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>';
 
+                return '
+                    <div class="d-flex justify-content-center gap-2" style="white-space: nowrap;">
+                        <button onclick="modalAction(\'' . $detailUrl . '\')" class="btn btn-sm btn-info" style="margin-left: 5px;">
+                            <i class="fas fa-info-circle"></i> Detail
+                        </button>
+                        <button onclick="modalAction(\'' . $editUrl . '\')" class="btn btn-sm btn-primary" style="margin-left: 5px;">
+                            <i class="fas fa-edit"></i> Ubah
+                        </button>
+                        <button onclick="modalAction(\'' . $deleteUrl . '\')" class="btn btn-sm btn-danger" style="margin-left: 5px;">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                ';
             })
-            ->rawColumns(['aksi']) // Pastikan rawColumns digunakan agar HTML dirender dengan benar
+            ->rawColumns(['aksi']) // Penting: supaya HTML di kolom aksi tidak di-escape
             ->setRowId('kategori_id');
     }
 
@@ -63,7 +60,6 @@ class KategoriDataTable extends DataTable
             ->setTableId('kategori-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            // ->dom('Bfrtip')
             ->orderBy(1)
             ->selectStyleSingle()
             ->buttons([
@@ -82,16 +78,13 @@ class KategoriDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('kategori_id'),
-            Column::make('kategori_kode'),
-            Column::make('kategori_nama'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            Column::make('kategori_id')->title('Kategori ID'),
+            Column::make('kategori_kode')->title('Kategori Kode'),
+            Column::make('kategori_nama')->title('Kategori Nama'),
             Column::computed('aksi')
                 ->exportable(false)
                 ->printable(false)
-                ->width(120)
-                ->addClass('text-center'),
+                ->addClass('text-center'), // Tidak perlu set width besar, biar fleksibel
         ];
     }
 
