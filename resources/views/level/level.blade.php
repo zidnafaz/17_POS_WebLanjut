@@ -69,7 +69,12 @@
                             if (response.status) {
                                 $('#myModal').modal('hide');
                                 $('#table_level').DataTable().ajax.reload();
-                                alert(response.message);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    confirmButtonText: 'OK'
+                                });
                             } else {
                                 if (response.msgField) {
                                     if (response.msgField.level_kode) {
@@ -87,17 +92,22 @@
                                         $('#error_level_nama').text('');
                                     }
                                 } else {
-                                    alert(response.message);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message,
+                                        confirmButtonText: 'OK'
+                                    });
                                 }
                             }
                         },
                         error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan saat menyimpan data.',
-                    confirmButtonText: 'OK'
-                });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat menyimpan data.',
+                                confirmButtonText: 'OK'
+                            });
                         }
                     });
                 });
@@ -120,7 +130,12 @@
                             if (response.status) {
                                 $('#myModal').modal('hide');
                                 $('#table_level').DataTable().ajax.reload();
-                                alert(response.message);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    confirmButtonText: 'OK'
+                                });
                             } else {
                                 if (response.msgField) {
                                     if (response.msgField.level_kode) {
@@ -138,17 +153,22 @@
                                         $('#error_level_nama').text('');
                                     }
                                 } else {
-                                    alert(response.message);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message,
+                                        confirmButtonText: 'OK'
+                                    });
                                 }
                             }
                         },
                         error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan saat mengupdate data.',
-                    confirmButtonText: 'OK'
-                });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat mengupdate data.',
+                                confirmButtonText: 'OK'
+                            });
                         }
                     });
                 });
@@ -165,29 +185,39 @@
                             if (response.status) {
                                 $('#myModal').modal('hide');
                                 $('#table_level').DataTable().ajax.reload();
-                                alert(response.message);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    confirmButtonText: 'OK'
+                                });
                             } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        },
+                        error: function() {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
-                                text: response.message,
+                                text: 'Terjadi kesalahan saat menghapus data.',
                                 confirmButtonText: 'OK'
                             });
                         }
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Terjadi kesalahan saat menghapus data.',
-                            confirmButtonText: 'OK'
-                        });
-                    }
+                    });
                 });
-            });
 
             }).fail(function() {
-                alert('Gagal memuat modal.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Gagal memuat modal.',
+                    confirmButtonText: 'OK'
+                });
             });
         }
 

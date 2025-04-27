@@ -331,7 +331,7 @@ return [
         ],
         [
             'text' => 'Daftar Produk',
-            'url' => '/daftar_produk',
+            'url' => '/products',
             'icon' => 'fas fa-fw fa-cogs', // Ikon untuk daftar produk (pengelolaan produk)
         ],
 

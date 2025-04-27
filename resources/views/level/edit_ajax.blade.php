@@ -71,7 +71,12 @@
                 }
             },
             error: function() {
-                alert('Terjadi kesalahan saat mengupdate data.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat mengupdate data.',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
