@@ -15,9 +15,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/category/{category}', [ProductController::class, 'show'])->name('products.category');
 
-// Route User
-// Route::get('/user/{id}/name/{name}', [UserController::class, 'show'])->name('user.show');
-
 // Route Penjualan (Selling)
 Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.index');
 
@@ -25,13 +22,16 @@ Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.ind
 Route::get('/Level', [LevelController::class, 'index']);
 
 // Route Kategori
-Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
-Route::post('/kategori', [KategoriController::class, 'store']);
-Route::get('/kategori/create', [KategoriController::class, 'create']);
-Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
-Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
-Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+Route::prefix('kategori')->group(function () {
+    Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
+    Route::post('/', [KategoriController::class, 'store']);
+    Route::get('/create', [KategoriController::class, 'create']);
+    Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
+    Route::put('/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+    Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+});
 
+// Route User
 Route::prefix('user')->group(function () {
     // Main user route
     Route::get('/', [UserController::class, 'index']);
