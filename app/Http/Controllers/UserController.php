@@ -78,44 +78,9 @@ class UserController extends Controller
         return redirect('/user');
     }
 
-    public function getUsers(Request $request)
+    public function getUsers(UserDataTable $dataTable)
     {
-        if ($request->ajax()) {
-            $query = UserModel::with('level');
-
-            if ($request->level_id) {
-                $query->where('level_id', $request->level_id);
-            }
-
-            return DataTables::of($query)
-                ->addColumn('level_nama', function ($user) {
-                    return $user->level ? $user->level->level_nama : '-'; // Pastikan mengakses properti level_nama
-                })
-                ->addColumn('id', function ($user) {
-                    return $user->user_id;
-                })
-                ->addColumn('aksi', function ($row) {
-                    $detailUrl = route('user.detail_ajax', $row->user_id);
-                    $editUrl = route('user.edit_ajax', $row->user_id);
-                    $deleteUrl = route('user.confirm_ajax', $row->user_id);
-
-                    return '
-                        <div class="d-flex justify-content-center gap-2" style="white-space: nowrap;">
-                            <button onclick="modalAction(\'' . $detailUrl . '\')" class="btn btn-sm btn-info" style="margin-left: 5px;">
-                                <i class="fas fa-info-circle"></i> Detail
-                            </button>
-                            <button onclick="modalAction(\'' . $editUrl . '\')" class="btn btn-sm btn-primary" style="margin-left: 5px;">
-                                <i class="fas fa-edit"></i> Ubah
-                            </button>
-                            <button onclick="modalAction(\'' . $deleteUrl . '\')" class="btn btn-sm btn-danger" style="margin-left: 5px;">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </div>
-                    ';
-                })
-                ->rawColumns(['level_nama', 'aksi']) // Pastikan kolom bisa di-render sebagai teks
-                ->make(true);
-        }
+        return $dataTable->ajax();
     }
 
     public function create_ajax()

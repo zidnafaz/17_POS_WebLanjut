@@ -65,7 +65,10 @@ class UserDataTable extends DataTable
         return $this->builder()
             ->setTableId('user-table')
             ->columns($this->getColumns())
-            ->minifiedAjax(route('user.getUsers'), "(function(data) { data.level_id = $('#level_id').val(); })")
+            ->ajax([
+                'url' => route('user.getUsers'),
+                'data' => "function(d) { d.level_id = $('#level_id').val(); }"
+            ])
             ->orderBy(1)
             ->buttons([
                 Button::make('excel'),
