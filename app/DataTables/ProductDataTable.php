@@ -21,6 +21,14 @@ class ProductDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            ->addColumn('kategori', function ($row) {
+                return $row->kategori ? $row->kategori->kategori_nama : '';
+            })
+            ->filterColumn('kategori', function ($query, $keyword) {
+                $query->whereHas('kategori', function ($q) use ($keyword) {
+                    $q->where('kategori_nama', 'like', "%{$keyword}%");
+                });
+            })
             ->addColumn('aksi', function ($row) {
                 $detailUrl = route('products.detail_ajax', $row->barang_id);
                 $editUrl = route('products.edit_ajax', $row->barang_id);
@@ -49,7 +57,9 @@ class ProductDataTable extends DataTable
      */
     public function query(BarangModel $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()
+            ->select('m_barang.*')
+            ->leftJoin('m_kategori', 'm_barang.kategori_id', '=', 'm_kategori.kategori_id');
     }
 
     /**
@@ -82,6 +92,12 @@ class ProductDataTable extends DataTable
             Column::make('barang_id')->title('Barang ID'),
             Column::make('barang_kode')->title('Barang Kode'),
             Column::make('barang_nama')->title('Barang Nama'),
+            Column::make('kategori')
+                ->title('Kategori')
+                ->orderable(true)
+                ->searchable(true)
+                ->data('kategori')
+                ->name('m_kategori.kategori_nama'),
             Column::make('harga_jual')->title('Harga Jual'),
             Column::computed('aksi')
                 ->exportable(false)
