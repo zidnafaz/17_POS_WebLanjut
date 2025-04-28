@@ -51,7 +51,7 @@
                 <div class="mb-3">
                     <label for="level_id" class="form-label">Filter Level:</label>
                     <select class="form-select" name="level_id" id="level_id" required>
-                        <option value="">-- Semua --</option>
+                        <option value="">-- Semua Level --</option>
                         @foreach ($level_id as $item)
                             <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
                         @endforeach

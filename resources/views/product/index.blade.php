@@ -47,7 +47,7 @@
             <div class="mb-3">
                 <label for="kategori_id" class="form-label">Filter Kategori:</label>
                 <select id="kategori_id" class="form-select" aria-label="Filter Kategori">
-                    <option value="">Semua Kategori</option>
+                    <option value="">-- Semua Kategori --</option>
                     @foreach ($categories as $category)
                         <option value="{{ $category->kategori_id }}">{{ $category->kategori_nama }}</option>
                     @endforeach
@@ -96,7 +96,13 @@
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
                                 window.LaravelDataTables["product-table"].ajax.reload();
-                                Swal.fire('Sukses!', 'Produk berhasil disimpan.', 'success');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: 'Produk berhasil disimpan.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
                             },
                             error: function(xhr) {
                                 Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan data.', 'error');

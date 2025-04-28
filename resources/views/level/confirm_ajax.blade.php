@@ -4,7 +4,7 @@
         <form id="formDeleteLevel" method="POST" action="{{ route('level.delete_ajax', ['id' => $level->level_id]) }}">
             @csrf
             @method('DELETE')
-            <div class="modal-header">
+            <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title">Konfirmasi Hapus Level</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
