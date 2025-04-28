@@ -7,7 +7,9 @@ use App\Models\UserModel;
 use App\Models\LevelModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\DataTables\UserDataTable;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -16,144 +18,10 @@ class UserController extends Controller
         return view('user', compact('id', 'name'));
     }
 
-    public function index()
+    public function index(UserDataTable $dataTable)
     {
-        // $user = UserModel::all(); // Mengambil semua data dari tabel m_user
-        // return view('user', ['data' => $user]);
-
-        // tambah data user dengan Eloquent Model
-        // $data = [
-        //     'username' => 'Customer-1',
-        //     'nama' => 'Pelanggan',
-        //     'password' => Hash::make('12345'),
-        //     'level_id' => 4
-        // ];
-
-        // UserModel::insert($data);
-
-        // $user = UserModel::all();
-        // return view('user', ['data' => $user]);
-
-        // $data = [
-        //     'nama' => 'Pelanggan Pertama'
-        // ];
-
-        // UserModel::where('username', 'Customer-1')->update($data);
-
-        // $user = UserModel::all();
-        // return view('user', ['data' => $user]);
-
-        // Jobsheet 04
-
-        // $data = [
-        //     'level_id' => 2,
-        //     'username' => 'manager_tiga',
-        //     'nama' => 'Manager 3',
-        //     'password' => Hash::make('12345')
-        // ];
-        // UserModel::create($data);
-
-        // $user = UserModel::all();
-        // return view('user', ['data' => $user]);
-
-        // $user = UserModel::find(1);
-        // return view('user', ['data' => $user]);
-
-        // $user = UserModel::where('level_id', 1)->first();
-        // return view('user', ['data' => $user]);
-
-        // $user = UserModel::firstWhere('level_id', 1);
-
-        // $user = UserModel::findOr(20, ['username', 'nama'], function () {
-        //     abort(404);
-        // });
-
-        // $user = UserModel::findOrFail(1);
-
-        // $user = UserModel::where('username', 'manager-9')->firstOrFail();
-
-
-        // $user = UserModel::where('level_id', 2)->count();
-        // dd($user);
-        // return view('user', ['data' => $user]);
-
-        // $user = UserModel::firstOrCreate(
-        //     [
-        //         'username' => 'manager-22',
-        //         'nama' => 'Manager Dua Dua',
-        //         'password' => Hash::make('12345'),
-        //         'level_id' => 2
-        //     ]
-        // );
-
-        // $user = UserModel::firstOrNew(
-        //     [
-        //         'username' => 'manager',
-        //         'nama' => 'Manager',
-        //     ]
-        // );
-
-        // $user = UserModel::firstOrNew(
-        //     [
-        //         'username' => 'manager-33',
-        //         'nama' => 'Manager Tiga Tiga',
-        //         'password' => Hash::make('12345'),
-        //         'level_id' => 2
-        //     ]
-        // );
-
-        // $user->save();
-
-        // return view('user', ['data' => $user]);
-
-        // $user = UserModel::firstOrNew(
-        //     [
-        //         'username' => 'manager-55',
-        //         'nama' => 'Manager 55',
-        //         'password' => Hash::make('12345'),
-        //         'level_id' => 2
-        //     ]
-        // );
-
-        // $user->username = 'manager-56';
-
-        // $user->isDirty();
-        // $user->isDirty('username');
-        // $user->isDirty('nama');
-        // $user->isDirty(['nama', 'username']);
-
-        // $user->isClean();
-        // $user->isClean('username');
-        // $user->isClean('nama');
-        // $user->isClean(['nama', 'username']);
-
-        // $user->save();
-
-        // $user->isDirty();
-        // $user->isClean();
-        // dd($user->isDirty());
-
-        // $user = UserModel::create([
-        //     'username' => 'manager-55',
-        //     'nama' => 'Manager 55',
-        //     'password' => Hash::make('12345'),
-        //     'level_id' => 2
-        // ]);
-
-        // $user->username = 'manager-12';
-        // $user->save();
-
-        // $user->wasChanged();
-        // $user->wasChanged('username');
-        // $user->wasChanged(['username', 'level_id']);
-        // $user->wasChanged('nama');
-        // $user->wasChanged('nama', 'username');
-
-        // $user = UserModel::with('level')->get();
-        // dd($user);
-
         $level_id = LevelModel::all(); // Sesuaikan dengan model level Anda
-        return view('user.user', compact('level_id'));
+        return $dataTable->render('user.index', compact('level_id'));
     }
 
     public function countByLevel()
@@ -226,7 +94,26 @@ class UserController extends Controller
                 ->addColumn('id', function ($user) {
                     return $user->user_id;
                 })
-                ->rawColumns(['level_nama']) // Pastikan kolom bisa di-render sebagai teks
+                ->addColumn('aksi', function ($row) {
+                    $detailUrl = route('user.detail_ajax', $row->user_id);
+                    $editUrl = route('user.edit_ajax', $row->user_id);
+                    $deleteUrl = route('user.confirm_ajax', $row->user_id);
+
+                    return '
+                        <div class="d-flex justify-content-center gap-2" style="white-space: nowrap;">
+                            <button onclick="modalAction(\'' . $detailUrl . '\')" class="btn btn-sm btn-info" style="margin-left: 5px;">
+                                <i class="fas fa-info-circle"></i> Detail
+                            </button>
+                            <button onclick="modalAction(\'' . $editUrl . '\')" class="btn btn-sm btn-primary" style="margin-left: 5px;">
+                                <i class="fas fa-edit"></i> Ubah
+                            </button>
+                            <button onclick="modalAction(\'' . $deleteUrl . '\')" class="btn btn-sm btn-danger" style="margin-left: 5px;">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </div>
+                    ';
+                })
+                ->rawColumns(['level_nama', 'aksi']) // Pastikan kolom bisa di-render sebagai teks
                 ->make(true);
         }
     }
@@ -241,6 +128,8 @@ class UserController extends Controller
 
     public function store_ajax(Request $request)
     {
+        Log::info('store_ajax called', $request->all());
+
         // Cek apakah request berupa AJAX atau ingin JSON response
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
@@ -253,6 +142,7 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
+                Log::warning('Validation failed in store_ajax', $validator->errors()->toArray());
                 return response()->json([
                     'status' => false, // response status: false = gagal, true = berhasil
                     'message' => 'Validasi Gagal',
@@ -260,13 +150,21 @@ class UserController extends Controller
                 ]);
             }
 
-            // Simpan user dengan hashing password untuk keamanan
-            UserModel::create([
-                'level_id' => $request->level_id,
-                'username' => $request->username,
-                'nama' => $request->nama,
-                'password' => bcrypt($request->password) // Enkripsi password
-            ]);
+            try {
+                // Simpan user dengan hashing password untuk keamanan
+                UserModel::create([
+                    'level_id' => $request->level_id,
+                    'username' => $request->username,
+                    'nama' => $request->nama,
+                    'password' => bcrypt($request->password) // Enkripsi password
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Exception in store_ajax: ' . $e->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat menyimpan data.'
+                ]);
+            }
 
             return response()->json([
                 'status' => true,
@@ -274,6 +172,7 @@ class UserController extends Controller
             ]);
         }
 
+        Log::warning('Invalid request in store_ajax');
         return response()->json([
             'status' => false,
             'message' => 'Request tidak valid'
@@ -351,5 +250,11 @@ class UserController extends Controller
                 'message' => 'Data tidak ditemukan'
             ]);
         }
+    }
+
+    public function detail_ajax($id)
+    {
+        $user = UserModel::with('level')->findOrFail($id);
+        return view('user.detail_ajax', compact('user'));
     }
 }

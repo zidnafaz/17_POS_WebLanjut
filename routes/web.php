@@ -65,7 +65,7 @@ Route::prefix('kategori')->group(function () {
 // Route User
 Route::prefix('user')->group(function () {
     // Main user route
-    Route::get('/', [UserController::class, 'index']);
+    Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::get('/getUsers', [UserController::class, 'getUsers'])->name('user.getUsers');
 
     // User count route
@@ -93,4 +93,7 @@ Route::prefix('user')->group(function () {
     // Ajax Delete
     Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax'])->name('user.confirm_ajax');
     Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax'])->name('user.delete_ajax');
+
+    // Ajax Detail
+    Route::get('/{id}/detail_ajax', [UserController::class, 'detail_ajax'])->name('user.detail_ajax');
 });
