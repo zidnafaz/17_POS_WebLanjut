@@ -44,6 +44,15 @@
         </div>
 
         <div class="card-body">
+            <div class="mb-3">
+                <label for="kategori_id" class="form-label">Filter Kategori:</label>
+                <select id="kategori_id" class="form-select" aria-label="Filter Kategori">
+                    <option value="">Semua Kategori</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->kategori_id }}">{{ $category->kategori_nama }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="table-responsive">
                 {{ $dataTable->table([
                     'class' => 'table table-hover table-bordered table-striped',
@@ -110,6 +119,11 @@
 
             // Aktifkan tooltips
             $('[data-toggle="tooltip"]').tooltip();
+
+            // Reload datatable on category filter change
+            $('#kategori_id').on('change', function() {
+                window.LaravelDataTables["product-table"].ajax.reload();
+            });
         });
     </script>
 @endpush

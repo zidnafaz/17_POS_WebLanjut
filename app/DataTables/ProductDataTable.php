@@ -57,9 +57,15 @@ class ProductDataTable extends DataTable
      */
     public function query(BarangModel $model): QueryBuilder
     {
-        return $model->newQuery()
+        $query = $model->newQuery()
             ->select('m_barang.*')
             ->leftJoin('m_kategori', 'm_barang.kategori_id', '=', 'm_kategori.kategori_id');
+
+        if (request()->has('kategori_id') && request('kategori_id') != '') {
+            $query->where('m_barang.kategori_id', request('kategori_id'));
+        }
+
+        return $query;
     }
 
     /**
@@ -70,7 +76,10 @@ class ProductDataTable extends DataTable
         return $this->builder()
             ->setTableId('product-table')
             ->columns($this->getColumns())
-            ->minifiedAjax()
+            ->ajax([
+                'url' => route('products.index'),
+                'data' => "function(d) { d.kategori_id = $('#kategori_id').val(); }"
+            ])
             ->orderBy(0, 'desc')
             // ->selectStyleSingle()
             ->buttons([

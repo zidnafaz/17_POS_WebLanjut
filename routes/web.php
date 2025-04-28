@@ -32,7 +32,7 @@ Route::get('/penjualan', [SellingController::class, 'index'])->name('selling.ind
 
 // Route Level
 Route::prefix('level')->group(function () {
-    Route::get('/', [LevelController::class, 'index']);
+    Route::get('/', [LevelController::class, 'index'])->name('level.index');
     Route::get('/getLevels', [LevelController::class, 'getLevels'])->name('level.getLevels');
 
     Route::get('/create_ajax', [LevelController::class, 'create_ajax'])->name('level.create_ajax');
