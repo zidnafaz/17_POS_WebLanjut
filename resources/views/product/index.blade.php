@@ -37,19 +37,6 @@
         </button>
     </div>
 
-    {{-- Filter --}}
-    <div class="row align-items-center mb-3">
-        <label class="col-md-1 col-form-label">Filter:</label>
-        <div class="col-md-3">
-            <select class="form-select" name="kategori_id" id="kategori_id" required>
-                <option value="">-- Semua --</option>
-                @foreach ($kategori as $item)
-                    <option value="{{ $item->kategori_id }}">{{ $item->kategori_nama }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
     {{-- Main Card --}}
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
@@ -99,7 +86,7 @@
                                 var modalEl = document.getElementById('myModal');
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
-                                window.LaravelDataTables["product-table"].draw();
+                                window.LaravelDataTables["product-table"].ajax.reload();
                                 Swal.fire('Sukses!', 'Produk berhasil disimpan.', 'success');
                             },
                             error: function(xhr) {
@@ -123,11 +110,6 @@
 
             // Aktifkan tooltips
             $('[data-toggle="tooltip"]').tooltip();
-
-            // Reload DataTable on kategori filter change
-            $('#kategori_id').change(function() {
-                window.LaravelDataTables["product-table"].draw();
-            });
         });
     </script>
 @endpush
