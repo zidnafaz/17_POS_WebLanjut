@@ -21,9 +21,6 @@ class ProductDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('kategori', function ($row) {
-                return $row->kategori ? $row->kategori->kategori_nama : '-';
-            })
             ->addColumn('aksi', function ($row) {
                 $detailUrl = route('products.detail_ajax', $row->barang_id);
                 $editUrl = route('products.edit_ajax', $row->barang_id);
@@ -52,7 +49,7 @@ class ProductDataTable extends DataTable
      */
     public function query(BarangModel $model): QueryBuilder
     {
-        return $model->newQuery()->with('kategori');
+        return $model->newQuery();
     }
 
     /**
@@ -83,7 +80,6 @@ class ProductDataTable extends DataTable
     {
         return [
             Column::make('barang_id')->title('Barang ID'),
-            Column::make('kategori')->title('Kategori'),
             Column::make('barang_kode')->title('Barang Kode'),
             Column::make('barang_nama')->title('Barang Nama'),
             Column::make('harga_jual')->title('Harga Jual'),
