@@ -1,17 +1,15 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-danger text-white">
             <h5 class="modal-title">Konfirmasi Hapus Suplier</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
         <div class="modal-body">
             <p>Apakah Anda yakin ingin menghapus suplier <strong>{{ $suplier->nama_suplier }}</strong>?</p>
         </div>
         <div class="modal-footer">
             <button id="btnDeleteSuplier" class="btn btn-danger">Hapus</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
         </div>
     </div>
 </div>
@@ -20,14 +18,18 @@
     $(document).ready(function() {
         $('#btnDeleteSuplier').click(function() {
             $.ajax({
-                url: "{{ route('suplier.delete_ajax', $suplier->suplier_id) }}",
+                url: "{{ route('suplier.delete_ajax', $suplier->id_suplier) }}",
                 method: 'DELETE',
                 data: {
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#myModal').modal('hide');
+                        var modalEl = document.getElementById('myModal');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) {
+                            modal.hide();
+                        }
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
