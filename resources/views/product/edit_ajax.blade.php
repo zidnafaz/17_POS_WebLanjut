@@ -1,9 +1,9 @@
-<form id="formEditProduct" action="{{ route('products.update_ajax', $product->id) }}" method="POST">
+<form id="formEditProduct" action="{{ route('products.update_ajax', $product->barang_id) }}" method="POST">
     @csrf
     @method('PUT')
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-white">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Edit Produk</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

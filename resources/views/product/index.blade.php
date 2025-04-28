@@ -99,7 +99,7 @@
         }
 
         function editModal(id) {
-            modalAction('{{ url('products') }}/' + id + '/edit_ajax');
+            modalAction('{{ url('products') }}/' + id + '/edit-ajax');
         }
 
         $(document).ready(function() {
