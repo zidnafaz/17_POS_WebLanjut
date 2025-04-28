@@ -83,7 +83,9 @@
                             method: form.find('input[name="_method"]').val() || form.attr('method'),
                             data: form.serialize(),
                             success: function(res) {
-                                $('#myModal').modal('hide');
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
                                 window.LaravelDataTables["product-table"].ajax.reload();
                                 Swal.fire('Sukses!', 'Produk berhasil disimpan.', 'success');
                             },

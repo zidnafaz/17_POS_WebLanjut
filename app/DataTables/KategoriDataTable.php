@@ -61,7 +61,7 @@ class KategoriDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->orderBy(1)
-            ->selectStyleSingle()
+            // ->selectStyleSingle()
             ->buttons([
                 Button::make('excel'),
                 Button::make('csv'),
