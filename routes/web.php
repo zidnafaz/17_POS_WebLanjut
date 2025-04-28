@@ -7,6 +7,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SellingController;
+use App\Http\Controllers\SuplierController;
 
 // Route Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -25,6 +26,10 @@ Route::prefix('products')->group(function () {
     Route::get('/{id}/confirm_ajax', [ProductController::class, 'confirm_ajax'])->name('products.confirm_ajax');
     Route::delete('/{id}/delete_ajax', [ProductController::class, 'delete_ajax'])->name('products.delete_ajax');
     Route::get('/{id}/detail_ajax', [ProductController::class, 'detail_ajax'])->name('products.detail_ajax');
+});
+
+Route::prefix('suplier')->group(function () {
+    Route::get('/', [SuplierController::class, 'index'])->name('suplier.index');
 });
 
 // Route Penjualan (Selling)

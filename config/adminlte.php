@@ -334,7 +334,12 @@ return [
             'url' => '/products',
             'icon' => 'fas fa-fw fa-cogs', // Ikon untuk daftar produk (pengelolaan produk)
         ],
-
+        ['header' => 'Data Suplier'],
+        [
+            'text' => 'Suplier',
+            'url' => '/suplier',
+            'icon' => 'fas fa-box', // Ikon untuk kategori produk (grid layout)
+        ],
         ['header' => 'Data User'],
         [
             'text' => 'Daftar User',
