@@ -19,6 +19,10 @@
                     <td>{{ $kategori->kategori_nama }}</td>
                 </tr>
                 <tr>
+                    <th>Jumlah Produk</th>
+                    <td>{{ $jumlahProduk }}</td>
+                </tr>
+                <tr>
                     <th>Created At</th>
                     <td>{{ $kategori->created_at ? $kategori->created_at->format('d M Y H:i:s') : '-' }}</td>
                 </tr>
