@@ -14,12 +14,17 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Route Products
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'dataTableIndex'])->name('products.index');
-    Route::get('/{category}', [ProductController::class, 'show'])->name('products.category');
-    // Route::get('/data', [ProductController::class, 'dataTableAjax'])->name('products.data');
+    Route::get('/create-ajax', [ProductController::class, 'create_ajax'])->name('products.create_ajax');
+    Route::get('/{id}/edit-ajax', [ProductController::class, 'edit_ajax'])->name('products.edit_ajax');
 
-    Route::get('/{id}/manage', [ProductController::class, 'manage'])->name('products.manage');
-    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::get('/{id}/confirm', [ProductController::class, 'confirm'])->name('products.confirm');
+    // Ajax Routes for Products
+    Route::get('/create_ajax', [ProductController::class, 'create_ajax'])->name('products.create_ajax');
+    Route::post('/store_ajax', [ProductController::class, 'store_ajax'])->name('products.store_ajax');
+    // Route::get('/{id}/edit_ajax', [ProductController::class, 'edit_ajax'])->name('products.edit_ajax');
+    Route::put('/{id}/update_ajax', [ProductController::class, 'update_ajax'])->name('products.update_ajax');
+    Route::get('/{id}/confirm_ajax', [ProductController::class, 'confirm_ajax'])->name('products.confirm_ajax');
+    Route::delete('/{id}/delete_ajax', [ProductController::class, 'delete_ajax'])->name('products.delete_ajax');
+    Route::get('/{id}/detail_ajax', [ProductController::class, 'detail_ajax'])->name('products.detail_ajax');
 });
 
 // Route Penjualan (Selling)
@@ -47,18 +52,13 @@ Route::prefix('kategori')->group(function () {
     Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
     Route::put('/{id}', [KategoriController::class, 'update'])->name('kategori.update');
     Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
-
     Route::get('/ajax', [KategoriController::class, 'ajaxKategori'])->name('kategori.ajax');
-
     Route::get('/create_ajax', [KategoriController::class, 'create_ajax'])->name('kategori.create_ajax');
     Route::post('/store_ajax', [KategoriController::class, 'store_ajax'])->name('kategori.store_ajax');
-
     Route::get('/{id}/edit_ajax', [KategoriController::class, 'edit_ajax'])->name('kategori.edit_ajax');
     Route::put('/{id}/update_ajax', [KategoriController::class, 'update_ajax'])->name('kategori.update_ajax');
-
     Route::get('/{id}/confirm_ajax', [KategoriController::class, 'confirm_ajax'])->name('kategori.confirm_ajax');
     Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax'])->name('kategori.delete_ajax');
-
     Route::get('/{id}/detail_ajax', [KategoriController::class, 'detail_ajax'])->name('kategori.detail_ajax');
 });
 

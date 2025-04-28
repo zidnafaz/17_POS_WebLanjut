@@ -22,26 +22,34 @@ class ProductDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('aksi', function ($row) {
-                $manageUrl = url('products/' . $row->kategori_kode);
+                $detailUrl = route('products.detail_ajax', $row->barang_id);
+                $editUrl = route('products.edit_ajax', $row->barang_id);
+                $deleteUrl = route('products.confirm_ajax', $row->barang_id);
 
-return '
-                    <div class="d-flex justify-content-center" style="white-space: nowrap;">
-                        <a href="' . $manageUrl . '" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-info" style="margin-left: 5px;">
-                            <i class="fas fa-cogs"></i> Kelola Produk
-                        </a>
+                return '
+                    <div class="d-flex justify-content-center gap-2" style="white-space: nowrap;">
+                        <button onclick="modalAction(\'' . $detailUrl . '\')" class="btn btn-sm btn-info" style="margin-left: 5px;">
+                            <i class="fas fa-info-circle"></i> Detail
+                        </button>
+                        <button onclick="modalAction(\'' . $editUrl . '\')" class="btn btn-sm btn-primary" style="margin-left: 5px;">
+                            <i class="fas fa-edit"></i> Ubah
+                        </button>
+                        <button onclick="modalAction(\'' . $deleteUrl . '\')" class="btn btn-sm btn-danger" style="margin-left: 5px;">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
                     </div>
                 ';
             })
-            ->rawColumns(['aksi']) // Important: allow HTML in aksi column
-            ->setRowId('kategori_id');
+            ->rawColumns(['aksi']) // Penting: supaya HTML di kolom aksi tidak di-escape
+            ->setRowId('barang_id');
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(KategoriModel $model): QueryBuilder
+    public function query(BarangModel $model): QueryBuilder
     {
-        return $model->newQuery()->distinct();
+        return $model->newQuery();
     }
 
     /**
@@ -71,8 +79,10 @@ return '
     public function getColumns(): array
     {
         return [
-            Column::make('kategori_kode')->title('Kategori Kode')->orderable(false)->searchable(false),
-            Column::make('kategori_nama')->title('Kategori Nama')->orderable(false)->searchable(false),
+            Column::make('barang_id')->title('Barang ID'),
+            Column::make('barang_kode')->title('Barang Kode'),
+            Column::make('barang_nama')->title('Barang Nama'),
+            Column::make('harga_jual')->title('Harga Jual'),
             Column::computed('aksi')
                 ->exportable(false)
                 ->printable(false)
