@@ -26,7 +26,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Minimal 6 huruf" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -47,15 +47,54 @@
                 method: 'POST',
                 data: form.serialize(),
                 success: function(response) {
-                    $('#myModal').modal('hide');
-                    window.LaravelDataTables["user-table"].ajax.reload();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: 'User berhasil ditambahkan.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
+                    if (response.status) {
+                        $('#myModal').modal('hide');
+                        window.LaravelDataTables["user-table"].ajax.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'User berhasil ditambahkan.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        if (response.msgField) {
+                            if (response.msgField.username) {
+                                $('#username').addClass('is-invalid');
+                                $('#error_username').text(response.msgField.username[0]);
+                            } else {
+                                $('#username').removeClass('is-invalid');
+                                $('#error_username').text('');
+                            }
+                            if (response.msgField.nama) {
+                                $('#nama').addClass('is-invalid');
+                                $('#error_nama').text(response.msgField.nama[0]);
+                            } else {
+                                $('#nama').removeClass('is-invalid');
+                                $('#error_nama').text('');
+                            }
+                            if (response.msgField.level_id) {
+                                $('#level_id').addClass('is-invalid');
+                                $('#error_level_id').text(response.msgField.level_id[0]);
+                            } else {
+                                $('#level_id').removeClass('is-invalid');
+                                $('#error_level_id').text('');
+                            }
+                            if (response.msgField.password) {
+                                $('#password').addClass('is-invalid');
+                                $('#error_password').text(response.msgField.password[0]);
+                            } else {
+                                $('#password').removeClass('is-invalid');
+                                $('#error_password').text('');
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message
+                            });
+                        }
+                    }
                 },
                 error: function(xhr) {
                     Swal.fire({
