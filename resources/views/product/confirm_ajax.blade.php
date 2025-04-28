@@ -28,7 +28,9 @@
                 method: 'POST',
                 data: form.serialize(),
                 success: function(response) {
-                    $('#myModal').modal('hide');
+                    var modalEl = document.getElementById('myModal');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
                     window.LaravelDataTables["product-table"].ajax.reload();
                     Swal.fire({
                         icon: 'success',
