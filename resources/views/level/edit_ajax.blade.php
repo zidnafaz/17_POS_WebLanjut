@@ -4,7 +4,7 @@
         <form id="formEditLevel" method="POST" action="{{ route('level.update_ajax', ['id' => $level->level_id]) }}">
             @csrf
             @method('PUT')
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Edit Level</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -47,8 +47,14 @@
             success: function(response) {
                 if (response.status) {
                     $('#myModal').modal('hide');
-                    $('#table_level').DataTable().ajax.reload();
-                    alert(response.message);
+                    window.LaravelDataTables["level-table"].ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 } else {
                     if (response.msgField) {
                         if (response.msgField.level_kode) {
@@ -66,7 +72,11 @@
                             $('#error_level_nama').text('');
                         }
                     } else {
-                        alert(response.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
                     }
                 }
             },

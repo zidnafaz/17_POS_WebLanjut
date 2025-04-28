@@ -1,9 +1,9 @@
 {{-- resources/views/level/create_ajax.blade.php --}}
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <form id="formCreateLevel" method="POST" action="{{ route('level.store_ajax') }}">
-            @csrf
-            <div class="modal-header">
+<form id="formCreateLevel" method="POST" action="{{ route('level.store_ajax') }}">
+    @csrf
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Tambah Level</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -23,9 +23,9 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 
 @push('js')
 <script>
@@ -35,12 +35,21 @@
         $.ajax({
             url: form.attr('action'),
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             data: form.serialize(),
             success: function(response) {
                 if (response.status) {
                     $('#myModal').modal('hide');
-                    $('#table_level').DataTable().ajax.reload();
-                    alert(response.message);
+                    window.LaravelDataTables["level-table"].ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 } else {
                     if (response.msgField) {
                         if (response.msgField.level_kode) {
@@ -58,12 +67,20 @@
                             $('#error_level_nama').text('');
                         }
                     } else {
-                        alert(response.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
                     }
                 }
             },
             error: function() {
-                alert('Terjadi kesalahan saat menyimpan data.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat menyimpan data.',
+                });
             }
         });
     });

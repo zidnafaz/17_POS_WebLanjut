@@ -6,15 +6,25 @@ use Illuminate\Http\Request;
 use App\Models\LevelModel;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use App\DataTables\LevelDataTable;
 
 class LevelController extends Controller
 {
-    public function index()
+
+    public function index(LevelDataTable $dataTable)
     {
-        $level_id = LevelModel::all(); // Sesuaikan dengan model level Anda
-        return view('level.level', compact('level_id'));
+        // $level_id = LevelModel::all(); // no longer needed for filter
+        return $dataTable->render('level.level');
     }
 
+    public function detail_ajax(string $id)
+    {
+        $level = LevelModel::find($id);
+        return view('level.detail_ajax', ['level' => $level]);
+    }
+
+    // Commenting out getLevels as DataTable service handles ajax
+    /*
     public function getLevels(Request $request)
     {
         if ($request->ajax()) {
@@ -27,6 +37,7 @@ class LevelController extends Controller
                 ->make(true);
         }
     }
+    */
 
     public function create_ajax()
     {
@@ -35,37 +46,30 @@ class LevelController extends Controller
 
     public function store_ajax(Request $request)
     {
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'level_kode' => 'required|string|unique:m_level,level_kode',
-                'level_nama' => 'required|string|max:100',
-            ];
+        $rules = [
+            'level_kode' => 'required|string|unique:m_level,level_kode',
+            'level_nama' => 'required|string|max:100',
+        ];
 
-            $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(),
-                ]);
-            }
-
-            LevelModel::create([
-                'level_kode' => $request->level_kode,
-                'level_nama' => $request->level_nama,
-            ]);
-
+        if ($validator->fails()) {
             return response()->json([
-                'status' => true,
-                'message' => 'Data level berhasil disimpan'
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors(),
             ]);
         }
 
+        LevelModel::create([
+            'level_kode' => $request->level_kode,
+            'level_nama' => $request->level_nama,
+        ]);
+
         return response()->json([
-            'status' => false,
-            'message' => 'Request tidak valid'
-        ], 400);
+            'status' => true,
+            'message' => 'Data level berhasil disimpan'
+        ]);
     }
 
     public function edit_ajax(string $id)
