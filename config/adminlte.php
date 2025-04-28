@@ -359,7 +359,7 @@ return [
         ],
         [
             'text' => 'Transaksi Penjualan',
-            'url' => '/transaksi',
+            'url' => '/penjualan',
             'icon' => 'fas fa-fw fa-cash-register', // Ikon untuk Transaksi Penjualan
         ],
     ],
