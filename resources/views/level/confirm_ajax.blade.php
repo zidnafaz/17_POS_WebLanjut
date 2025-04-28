@@ -32,13 +32,27 @@
                 if (response.status) {
                     $('#myModal').modal('hide');
                     $('#table_level').DataTable().ajax.reload();
-                    alert(response.message);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 } else {
-                    alert(response.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                    });
                 }
             },
             error: function() {
-                alert('Terjadi kesalahan saat menghapus data.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat menghapus data.',
+                });
             }
         });
     });

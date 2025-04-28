@@ -47,12 +47,28 @@
 
             <div class="card-body">
                 {{-- Alert --}}
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
-                @endif
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        @if(session('success'))
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sukses',
+                                text: '{{ session('success') }}',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                        @endif
+                        @if(session('error'))
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: '{{ session('error') }}',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                        @endif
+                    });
+                </script>
 
                 {{-- Table Level --}}
                 <div class="table-responsive">
@@ -78,8 +94,168 @@
             $.get(url, function(response) {
                 $('#myModal').html(response);
                 $('#myModal').modal('show');
+
+                // Rebind form submit handler for dynamically loaded create modal content
+                $('#formCreateLevel').submit(function(e) {
+                    e.preventDefault();
+                    let form = $(this);
+                    $.ajax({
+                        url: form.attr('action'),
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        data: form.serialize(),
+                        success: function(response) {
+                            if (response.status) {
+                                $('#myModal').modal('hide');
+                                window.LaravelDataTables["level-table"].ajax.reload();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                if (response.msgField) {
+                                    if (response.msgField.level_kode) {
+                                        $('#level_kode').addClass('is-invalid');
+                                        $('#error_level_kode').text(response.msgField.level_kode[0]);
+                                    } else {
+                                        $('#level_kode').removeClass('is-invalid');
+                                        $('#error_level_kode').text('');
+                                    }
+                                    if (response.msgField.level_nama) {
+                                        $('#level_nama').addClass('is-invalid');
+                                        $('#error_level_nama').text(response.msgField.level_nama[0]);
+                                    } else {
+                                        $('#level_nama').removeClass('is-invalid');
+                                        $('#error_level_nama').text('');
+                                    }
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message,
+                                    });
+                                }
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat menyimpan data.',
+                            });
+                        }
+                    });
+                });
+
+                // Rebind form submit handler for dynamically loaded edit modal content
+                $('#formEditLevel').submit(function(e) {
+                    e.preventDefault();
+                    let form = $(this);
+                    let formData = form.serializeArray();
+
+                    // Ensure _method=PUT is included for Laravel method spoofing
+                    if (!formData.some(field => field.name === '_method')) {
+                        formData.push({ name: '_method', value: 'PUT' });
+                    }
+
+                    $.ajax({
+                        url: form.attr('action'),
+                        method: 'POST',
+                        data: $.param(formData),
+                        success: function(response) {
+                            if (response.status) {
+                                $('#myModal').modal('hide');
+                                window.LaravelDataTables["level-table"].ajax.reload();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                if (response.msgField) {
+                                    if (response.msgField.level_kode) {
+                                        $('#level_kode').addClass('is-invalid');
+                                        $('#error_level_kode').text(response.msgField.level_kode[0]);
+                                    } else {
+                                        $('#level_kode').removeClass('is-invalid');
+                                        $('#error_level_kode').text('');
+                                    }
+                                    if (response.msgField.level_nama) {
+                                        $('#level_nama').addClass('is-invalid');
+                                        $('#error_level_nama').text(response.msgField.level_nama[0]);
+                                    } else {
+                                        $('#level_nama').removeClass('is-invalid');
+                                        $('#error_level_nama').text('');
+                                    }
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message,
+                                    });
+                                }
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat mengupdate data.',
+                            });
+                        }
+                    });
+                });
+
+                // Rebind form submit handler for dynamically loaded delete modal content
+                $('#formDeleteLevel').submit(function(e) {
+                    e.preventDefault();
+                    let form = $(this);
+                    $.ajax({
+                        url: form.attr('action'),
+                        method: 'POST',
+                        data: form.serialize(),
+                        success: function(response) {
+                            if (response.status) {
+                                $('#myModal').modal('hide');
+                                window.LaravelDataTables["level-table"].ajax.reload();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message,
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat menghapus data.',
+                            });
+                        }
+                    });
+                });
+
             }).fail(function() {
-                alert('Gagal memuat modal.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Gagal memuat modal.',
+                });
             });
         }
 
