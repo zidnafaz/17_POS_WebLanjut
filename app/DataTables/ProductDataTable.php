@@ -90,14 +90,14 @@ class ProductDataTable extends DataTable
     {
         return [
             Column::make('barang_id')->title('Barang ID'),
-            Column::make('barang_kode')->title('Barang Kode'),
-            Column::make('barang_nama')->title('Barang Nama'),
             Column::make('kategori')
                 ->title('Kategori')
                 ->orderable(true)
                 ->searchable(true)
                 ->data('kategori')
                 ->name('m_kategori.kategori_nama'),
+            Column::make('barang_kode')->title('Barang Kode'),
+            Column::make('barang_nama')->title('Barang Nama'),
             Column::make('harga_jual')->title('Harga Jual'),
             Column::computed('aksi')
                 ->exportable(false)
