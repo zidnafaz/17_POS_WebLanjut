@@ -1,15 +1,19 @@
-<div class="modal-header">
-    <h5 class="modal-title">Konfirmasi Hapus Suplier</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
-    <p>Apakah Anda yakin ingin menghapus suplier <strong>{{ $suplier->suplier_nama }}</strong>?</p>
-</div>
-<div class="modal-footer">
-    <button id="btnDeleteSuplier" class="btn btn-danger">Hapus</button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Konfirmasi Hapus Suplier</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Apakah Anda yakin ingin menghapus suplier <strong>{{ $suplier->nama_suplier }}</strong>?</p>
+        </div>
+        <div class="modal-footer">
+            <button id="btnDeleteSuplier" class="btn btn-danger">Hapus</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        </div>
+    </div>
 </div>
 
 <script>

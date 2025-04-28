@@ -23,7 +23,7 @@ class SuplierDataTable extends DataTable
             ->addColumn('aksi', function ($row) {
                 $detailUrl = route('suplier.detail_ajax', $row->id_suplier);
                 $editUrl = route('suplier.edit_ajax', $row->id_suplier);
-                $deleteUrl = route('suplier.confirm_ajax', $row->id_suplier);
+                $deleteUrl = url(route('suplier.confirm_ajax', $row->id_suplier));
 
                 return "
                     <div class=\"d-flex justify-content-center gap-2\" style=\"white-space: nowrap;\">
@@ -80,6 +80,8 @@ class SuplierDataTable extends DataTable
             Column::make('id_suplier')->title('Suplier ID'),
             Column::make('kode_suplier')->title('Suplier Kode'),
             Column::make('nama_suplier')->title('Suplier Nama'),
+            Column::make('no_telepon')->title('No Telepon'),
+            Column::make('alamat')->title('Alamat'),
             Column::computed('aksi')
                 ->exportable(false)
                 ->printable(false)

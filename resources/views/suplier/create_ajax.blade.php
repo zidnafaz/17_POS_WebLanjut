@@ -1,58 +1,64 @@
-<form id="formSuplierCreate" method="POST" action="{{ route('suplier.store_ajax') }}">
-    @csrf
-    <div class="modal-header">
-        <h5 class="modal-title">Tambah Suplier</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="form-group">
-            <label for="suplier_kode">Kode Suplier</label>
-            <input type="text" class="form-control" id="suplier_kode" name="suplier_kode" required>
+<div class="modal-dialog" role="document">
+    <form id="formCreateSuplier" method="POST" action="{{ route('suplier.store_ajax') }}">
+        @csrf
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Tambah Suplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="kode_suplier" class="form-label">Kode Suplier</label>
+                    <input type="text" class="form-control" id="kode_suplier" name="kode_suplier" required
+                        maxlength="10">
+                </div>
+                <div class="mb-3">
+                    <label for="nama_suplier" class="form-label">Nama Suplier</label>
+                    <input type="text" class="form-control" id="nama_suplier" name="nama_suplier" required
+                        maxlength="100">
+                </div>
+                <div class="mb-3">
+                    <label for="no_telepon" class="form-label">No Telepon</label>
+                    <input type="text" class="form-control" id="no_telepon" name="no_telepon" maxlength="15">
+                </div>
+                <div class="mb-3">
+                    <label for="alamat" class="form-label">Alamat</label>
+                    <textarea class="form-control" id="alamat" name="alamat" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="suplier_nama">Nama Suplier</label>
-            <input type="text" class="form-control" id="suplier_nama" name="suplier_nama" required>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Simpan</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
     $(document).ready(function() {
-        $('#formSuplierCreate').submit(function(e) {
+        $('#formCreateSuplier').submit(function(e) {
             e.preventDefault();
+            var form = $(this);
             $.ajax({
-                url: $(this).attr('action'),
+                url: form.attr('action'),
                 method: 'POST',
-                data: $(this).serialize(),
+                data: form.serialize(),
                 success: function(response) {
-                    if (response.success) {
-                        $('#myModal').modal('hide');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Data suplier berhasil ditambahkan',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                        window.LaravelDataTables["suplier-table"].ajax.reload();
-                    }
+                    $('#myModal').modal('hide');
+                    window.LaravelDataTables["suplier-table"].ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Suplier berhasil ditambahkan.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 },
                 error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessages = '';
-                    $.each(errors, function(key, value) {
-                        errorMessages += value + '\n';
-                    });
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: errorMessages,
+                        text: 'Terjadi kesalahan saat menyimpan data.'
                     });
                 }
             });

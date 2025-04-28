@@ -62,7 +62,8 @@
         function modalAction(url) {
             $.get(url, function(response) {
                 $('#myModal').html(response);
-                $('#myModal').modal('show');
+                var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+                myModal.show();
             }).fail(function() {
                 alert('Gagal memuat modal.');
             });

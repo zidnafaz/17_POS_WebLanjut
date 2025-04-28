@@ -23,11 +23,15 @@ class SuplierController extends Controller
         $request->validate([
             'kode_suplier' => 'required|string|max:10',
             'nama_suplier' => 'required|string|max:100',
+            'no_telepon' => 'nullable|string|max:15',
+            'alamat' => 'nullable|string',
         ]);
 
         SuplierModel::create([
             'kode_suplier' => $request->kode_suplier,
             'nama_suplier' => $request->nama_suplier,
+            'no_telepon' => $request->no_telepon,
+            'alamat' => $request->alamat,
         ]);
 
         return response()->json(['success' => true]);
@@ -44,12 +48,16 @@ class SuplierController extends Controller
         $request->validate([
             'kode_suplier' => 'required|string|max:10',
             'nama_suplier' => 'required|string|max:100',
+            'no_telepon' => 'nullable|string|max:15',
+            'alamat' => 'nullable|string',
         ]);
 
         $suplier = SuplierModel::findOrFail($id);
         $suplier->update([
             'kode_suplier' => $request->kode_suplier,
             'nama_suplier' => $request->nama_suplier,
+            'no_telepon' => $request->no_telepon,
+            'alamat' => $request->alamat,
         ]);
 
         return response()->json(['success' => true]);

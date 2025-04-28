@@ -35,8 +35,8 @@ Route::prefix('suplier')->group(function () {
     Route::post('/store_ajax', [SuplierController::class, 'store_ajax'])->name('suplier.store_ajax');
     Route::get('/{id}/edit_ajax', [SuplierController::class, 'edit_ajax'])->name('suplier.edit_ajax');
     Route::put('/{id}/update_ajax', [SuplierController::class, 'update_ajax'])->name('suplier.update_ajax');
-    Route::get('/{id}/confirm_ajax', [SuplierController::class, 'confirm_ajax'])->name('suplier.confirm_ajax');
-    Route::delete('/{id}/delete_ajax', [SuplierController::class, 'delete_ajax'])->name('suplier.delete_ajax');
+    Route::get('/{id_suplier}/confirm_ajax', [SuplierController::class, 'confirm_ajax'])->name('suplier.confirm_ajax');
+    Route::delete('/{id_suplier}/delete_ajax', [SuplierController::class, 'delete_ajax'])->name('suplier.delete_ajax');
     Route::get('/{id}/detail_ajax', [SuplierController::class, 'detail_ajax'])->name('suplier.detail_ajax');
 });
 
