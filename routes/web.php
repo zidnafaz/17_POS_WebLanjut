@@ -8,9 +8,20 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SellingController;
 use App\Http\Controllers\SuplierController;
+use App\Http\Controllers\AuthController;
 
 // Route Home
-Route::get('/', [HomeController::class, 'index'])->name('home');
+// Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter {id}, maka harus berupa angka
+
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'postLogin']);
+Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+
+Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+    // masukkan semua route yang perlu autentikasi di sini
+});
 
 // Route Kategori
 Route::prefix('kategori')->group(function () {
