@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Pengguna</title>
+    <title>Register Pengguna</title>
 
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
             padding: 20px;
         }
 
-        .login-container {
+        .register-container {
             max-width: 450px;
             width: 100%;
             background: white;
@@ -49,23 +49,23 @@
             transition: all 0.3s ease;
         }
 
-        .login-container:hover {
+        .register-container:hover {
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
 
-        .login-header {
+        .register-header {
             background: var(--primary-color);
             color: white;
             padding: 25px;
             text-align: center;
         }
 
-        .login-header h3 {
+        .register-header h3 {
             font-weight: 600;
             margin: 0;
         }
 
-        .login-body {
+        .register-body {
             padding: 30px;
         }
 
@@ -91,7 +91,7 @@
             color: #6c757d;
         }
 
-        .btn-login {
+        .btn-register {
             background: var(--primary-color);
             border: none;
             height: 50px;
@@ -101,87 +101,24 @@
             transition: all 0.3s;
         }
 
-        .btn-login:hover {
+        .btn-register:hover {
             background: var(--secondary-color);
             transform: translateY(-2px);
         }
 
-        .forgot-password {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .forgot-password:hover {
-            text-decoration: underline;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .divider::before, .divider::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .divider-text {
-            padding: 0 10px;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .social-login {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .social-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            transition: all 0.3s;
-        }
-
-        .social-btn:hover {
-            transform: translateY(-3px);
-        }
-
-        .facebook {
-            background: #3b5998;
-        }
-
-        .google {
-            background: #db4437;
-        }
-
-        .twitter {
-            background: #1da1f2;
-        }
-
-        .register-link {
+        .login-link {
             text-align: center;
             margin-top: 20px;
             color: #6c757d;
         }
 
-        .register-link a {
+        .login-link a {
             color: var(--primary-color);
             font-weight: 500;
             text-decoration: none;
         }
 
-        .register-link a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
 
@@ -193,13 +130,13 @@
 </head>
 
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h3> Welcome Back</h3>
+    <div class="register-container">
+        <div class="register-header">
+            <h3> Create Account</h3>
         </div>
 
-        <div class="login-body">
-            <form action="{{ url('login') }}" method="POST" id="form-login">
+        <div class="register-body">
+            <form action="{{ url('register') }}" method="POST" id="form-register">
                 @csrf
 
                 <div class="mb-3 position-relative">
@@ -212,6 +149,26 @@
                 </div>
 
                 <div class="mb-3 position-relative">
+                    <label for="nama" class="form-label">Nama</label>
+                    <div class="position-relative">
+                        <input type="text" name="nama" id="nama" class="form-control ps-4"
+                               placeholder="Enter your full name">
+                    </div>
+                    <small id="error-nama" class="text-danger error-text"></small>
+                </div>
+
+                <div class="mb-3 position-relative">
+                    <label for="level_id" class="form-label">Level</label>
+                    <select class="form-select" id="level_id" name="level_id" required>
+                        <option value="">-- Pilih Level --</option>
+                        @foreach ($level as $item)
+                            <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
+                        @endforeach
+                    </select>
+                    <small id="error-level_id" class="text-danger error-text"></small>
+                </div>
+
+                <div class="mb-3 position-relative">
                     <label for="password" class="form-label">Password</label>
                     <div class="position-relative">
                         <input type="password" name="password" id="password" class="form-control ps-4"
@@ -220,16 +177,21 @@
                     <small id="error-password" class="text-danger error-text"></small>
                 </div>
 
-                {{-- <div class="d-flex justify-content-between align-items-center mb-4">
-                    <a href="#" class="forgot-password">Forgot password?</a>
-                </div> --}}
+                <div class="mb-3 position-relative">
+                    <label for="password_confirmation" class="form-label">Confirm Password</label>
+                    <div class="position-relative">
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control ps-4"
+                               placeholder="Confirm your password">
+                    </div>
+                    <small id="error-password_confirmation" class="text-danger error-text"></small>
+                </div>
 
-                <button type="submit" class="btn btn-primary btn-login w-100 mb-3">
-                    <i class="fas fa-sign-in-alt me-2"></i> Login
+                <button type="submit" class="btn btn-primary btn-register w-100 mb-3">
+                    <i class="fas fa-user-plus me-2"></i> Sign Up
                 </button>
 
-                <div class="register-link">
-                    Don't have an account? <a href="{{ route('register') }}">Sign up</a>
+                <div class="login-link">
+                    Already have an account? <a href="{{ url('login') }}">Sign in</a>
                 </div>
             </form>
         </div>
@@ -249,7 +211,7 @@
 
     <script>
         $(document).ready(function() {
-            $("#form-login").validate({
+            $("#form-register").validate({
                 rules: {
                     username: {
                         required: true,
@@ -260,6 +222,10 @@
                         required: true,
                         minlength: 6,
                         maxlength: 20
+                    },
+                    password_confirmation: {
+                        required: true,
+                        equalTo: "#password"
                     }
                 },
                 messages: {
@@ -272,6 +238,10 @@
                         required: "Password is required",
                         minlength: "Minimum 6 characters",
                         maxlength: "Maximum 20 characters"
+                    },
+                    password_confirmation: {
+                        required: "Please confirm your password",
+                        equalTo: "Passwords do not match"
                     }
                 },
                 errorElement: 'span',
@@ -295,7 +265,7 @@
                             if (response.status) {
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Success',
+                                    title: 'Registration Successful',
                                     text: response.message,
                                     showConfirmButton: false,
                                     timer: 1500
@@ -309,8 +279,23 @@
                                 });
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Login Failed',
+                                    title: 'Registration Failed',
                                     text: response.message
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            let response = xhr.responseJSON;
+                            if(response && response.msgField) {
+                                $('.error-text').text('');
+                                $.each(response.msgField, function(field, message) {
+                                    $('#error-' + field).text(message[0]);
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Registration Failed',
+                                    text: response && response.message ? response.message : 'An unexpected error occurred. Please try again later.'
                                 });
                             }
                         }
@@ -320,20 +305,6 @@
             });
         });
     </script>
-
-    @if(session('logout_success'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Berhasil Logout',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        });
-    </script>
-    @endif
 </body>
 
 </html>
