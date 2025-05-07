@@ -362,6 +362,12 @@ return [
             'url' => '/penjualan',
             'icon' => 'fas fa-fw fa-cash-register', // Ikon untuk Transaksi Penjualan
         ],
+        [
+            'text' => 'Logout',
+            'url' => 'logout',
+            'icon' => 'fas fa-sign-out-alt',
+            'classes' => 'bg-danger',
+        ],
     ],
 
     /*
