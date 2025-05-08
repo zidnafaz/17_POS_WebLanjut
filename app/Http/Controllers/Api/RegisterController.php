@@ -13,7 +13,7 @@ class RegisterController extends Controller
         //set validation
         $validator = Validator::make($request->all(), [
             'username' => 'required',
-            'name' => 'required',
+            'nama' => 'required',
             'password' => 'required|min:5|confirmed',
             'level_id' => 'required'
         ]);
@@ -26,7 +26,7 @@ class RegisterController extends Controller
         //create user
         $user = UserModel::create([
             'username' => $request->username,
-            'name' => $request->name,
+            'nama' => $request->nama,
             'password' => bcrypt($request->password),
             'level_id' => $request->level_id,
         ]);
