@@ -35,6 +35,9 @@
         <button class="btn btn-primary" onclick="modalAction('{{ route('products.create_ajax') }}')">
             <i class="fas fa-plus"></i> Tambah Produk
         </button>
+        <button class="btn btn-primary" onclick="modalAction('{{ route('products.import') }}')">
+            <i class="fas fa-plus"></i> Import Produk
+        </button>
     </div>
 
     {{-- Main Card --}}
