@@ -153,6 +153,11 @@
                                 });
                             },
                             error: function(xhr) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                if (modal) {
+                                    modal.hide();
+                                }
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error',
