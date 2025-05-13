@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Kategori')
-@section('subtitle', 'Kategori')
+@section('title', 'Level')
+@section('subtitle', 'Level')
 
 @push('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -22,7 +22,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url('/') }}">Beranda</a></li>
-                <li class="breadcrumb-item active">Kategori</li>
+                <li class="breadcrumb-item active">Level</li>
             </ol>
         </nav>
     </div>
@@ -32,19 +32,19 @@
     <div class="container-fluid">
         {{-- Page Header --}}
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Manajemen Kategori</h2>
+            <h2 class="mb-0">Manajemen Level</h2>
             <div>
-                <a class="btn btn-primary me-2" href="{{ route('kategori.export_pdf') }}">
-                    <i class="fas fa-file-excel"></i> Export Kategori - PDF
+                <a class="btn btn-primary me-2" href="{{ route('level.export_pdf') }}">
+                    <i class="fas fa-file-excel"></i> Export Level - PDF
                 </a>
-                <a class="btn btn-primary me-2" href="{{ route('kategori.export_excel') }}">
-                    <i class="fas fa-file-excel"></i> Export Kategori - Excel
+                <a class="btn btn-primary me-2" href="{{ route('level.export_excel') }}">
+                    <i class="fas fa-file-excel"></i> Export Level - Excel
                 </a>
-                <button class="btn btn-primary me-2" onclick="modalAction('{{ route('kategori.import') }}')">
-                    <i class="fas fa-file-import"></i> Import Kategori
+                <button class="btn btn-primary me-2" onclick="modalAction('{{ route('level.import') }}')">
+                    <i class="fas fa-file-import"></i> Import Level
                 </button>
-                <button onclick="modalAction('{{ route('kategori.create_ajax') }}')" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Tambah Kategori
+                <button onclick="modalAction('{{ route('level.create_ajax') }}')" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Tambah Level
                 </button>
             </div>
         </div>
@@ -52,12 +52,23 @@
         {{-- Main Card --}}
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h3 class="card-title mb-0">Daftar Kategori</h3>
+                <h3 class="card-title mb-0">Daftar Level</h3>
             </div>
 
             <div class="card-body">
+                {{-- Filter --}}
+                <div class="mb-3">
+                    <label for="level_id" class="form-label">Filter Level:</label>
+                    <select class="form-select" name="level_id" id="level_id" required>
+                        <option value="">-- Semua Level --</option>
+                        @foreach ($level_id as $item)
+                            <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="table-responsive">
                     {{ $dataTable->table([
+                        'id' => 'level-table',
                         'class' => 'table table-hover table-bordered table-striped',
                         'style' => 'width:100%',
                     ]) }}
@@ -65,19 +76,13 @@
             </div>
         </div>
 
-        {{-- Di bagian bawah sebelum penutup scripts --}}
-        <div id="myModal" class="modal fade" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <!-- Konten modal akan diisi secara dinamis -->
-                </div>
-            </div>
-        </div>
+        {{-- Modal --}}
+        <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
     </div>
 @endsection
 
 @push('scripts')
-    {{ $dataTable->scripts() }}
+    {!! $dataTable->scripts() !!}
     <script>
         function modalAction(url) {
             $.get(url)
@@ -87,10 +92,10 @@
                     modal.show();
 
                     // Reset all event listeners
-                    $(document).off('submit', '#formCreateKategori, #formEditKategori, #form-import');
+                    $(document).off('submit', '#formCreateLevel, #formEditLevel, #form-import');
 
                     // Handle create/edit form submit
-                    $(document).on('submit', '#formCreateKategori, #formEditKategori', function(e) {
+                    $(document).on('submit', '#formCreateLevel, #formEditLevel', function(e) {
                         e.preventDefault();
                         var form = $(this);
 
@@ -102,18 +107,17 @@
                                 var modalEl = document.getElementById('myModal');
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
-                                window.LaravelDataTables["kategori-table"].ajax.reload();
+                                window.LaravelDataTables["level-table"].draw();
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Sukses',
-                                    text: 'Kategori berhasil disimpan.',
+                                    text: 'Level berhasil disimpan.',
                                     timer: 2000,
                                     showConfirmButton: false
                                 });
                             },
                             error: function(xhr) {
-                                Swal.fire('Error!', xhr.responseJSON?.message ||
-                                    'Gagal menyimpan data.', 'error');
+                                Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan data.', 'error');
                             }
                         });
                     });
@@ -146,8 +150,7 @@
                                     timer: 2000,
                                     showConfirmButton: false
                                 }).then(() => {
-                                    window.LaravelDataTables["kategori-table"].ajax
-                                .reload();
+                                    window.LaravelDataTables["level-table"].draw();
                                 });
                             },
                             error: function(xhr) {
@@ -163,8 +166,7 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error',
-                                    text: xhr.responseJSON?.message ||
-                                        'Gagal mengimport data'
+                                    text: xhr.responseJSON?.message || 'Gagal mengimport data'
                                 });
                             },
                             complete: function() {
@@ -173,20 +175,15 @@
                             }
                         });
                     });
+
+                    // Reload DataTable on filter change
+                    $('#level_kode').change(function() {
+                        window.LaravelDataTables["level-table"].draw();
+                    });
                 })
                 .fail(function(xhr) {
                     Swal.fire('Error!', 'Gagal memuat form: ' + xhr.statusText, 'error');
                 });
         }
-
-        $(document).ready(function() {
-            // Add margin to DataTable buttons
-            $('.dt-buttons').addClass('mb-3');
-
-            // Initialize tooltips
-            $('[data-toggle="tooltip"]').tooltip();
-
-            // Additional initialization if needed
-        });
     </script>
 @endpush

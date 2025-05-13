@@ -51,6 +51,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax'])->name('user.confirm_ajax');
         Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax'])->name('user.delete_ajax');
         Route::get('/{id}/detail_ajax', [UserController::class, 'detail_ajax'])->name('user.detail_ajax');
+
+        // Import and Export routes
+        Route::get('/import', [UserController::class, 'import'])->name('user.import');
+        Route::post('/import_ajax', [UserController::class, 'import_ajax'])->name('user.import_ajax');
+        Route::get('/export_excel', [UserController::class, 'export_excel'])->name('user.export_excel');
+        Route::get('/export_pdf', [UserController::class, 'export_pdf'])->name('user.export_pdf');
     });
 
     // --------------------------
@@ -66,6 +72,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax'])->name('level.confirm_ajax');
         Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax'])->name('level.delete_ajax');
         Route::get('/{id}/detail_ajax', [LevelController::class, 'detail_ajax'])->name('level.detail_ajax');
+
+        // Import and Export routes
+        Route::get('/import', [LevelController::class, 'import'])->name('level.import');
+        Route::post('/import_ajax', [LevelController::class, 'import_ajax'])->name('level.import_ajax');
+        Route::get('/export_excel', [LevelController::class, 'export_excel'])->name('level.export_excel');
+        Route::get('/export_pdf', [LevelController::class, 'export_pdf'])->name('level.export_pdf');
     });
 
     // --------------------------

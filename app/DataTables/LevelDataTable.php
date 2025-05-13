@@ -50,7 +50,14 @@ EOT;
      */
     public function query(LevelModel $model): QueryBuilder
     {
-        return $model->newQuery();
+        $query = $model->newQuery();
+
+        // Add filter if needed, e.g. by level_kode or other fields
+        if (request()->has('level_kode') && request('level_kode') != '') {
+            $query->where('level_kode', 'like', '%' . request('level_kode') . '%');
+        }
+
+        return $query;
     }
 
     /**
@@ -63,6 +70,7 @@ EOT;
             ->columns($this->getColumns())
             ->ajax([
                 'url' => route('level.index'),
+                'data' => "function(d) { d.level_kode = $('#level_kode').val(); }"
             ])
             ->orderBy(1)
             ->buttons([
@@ -81,6 +89,7 @@ EOT;
     public function getColumns(): array
     {
         return [
+            Column::make('level_id')->title('ID'),
             Column::make('level_kode')->title('Kode Level'),
             Column::make('level_nama')->title('Nama Level'),
             Column::computed('aksi')
