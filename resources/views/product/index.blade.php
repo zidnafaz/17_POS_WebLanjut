@@ -34,7 +34,13 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">Manajemen Produk</h2>
             <div>
-                <button class="btn btn-success me-2" onclick="modalAction('{{ route('products.import') }}')">
+                <a class="btn btn-primary me-2" href="{{ route('products.export_pdf') }}">
+                    <i class="fas fa-file-excel"></i> Export Produk - PDF
+                </a>
+                <a class="btn btn-primary me-2" href="{{ route('products.export_excel') }}">
+                    <i class="fas fa-file-excel"></i> Export Produk - Excel
+                </a>
+                <button class="btn btn-primary me-2" onclick="modalAction('{{ route('products.import') }}')">
                     <i class="fas fa-file-import"></i> Import Produk
                 </button>
                 <button class="btn btn-primary" onclick="modalAction('{{ route('products.create_ajax') }}')">
@@ -152,23 +158,23 @@
                                     window.LaravelDataTables["product-table"].ajax.reload();
                                 });
                             },
-error: function(xhr) {
-    var modalEl = document.getElementById('myModal');
-    var modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) {
-        var activeElement = document.activeElement;
-        modal.hide();
-        if (activeElement && activeElement.blur) {
-            activeElement.blur();
-        }
-    }
-    Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: xhr.responseJSON?.message ||
-            'Gagal mengimport data'
-    });
-},
+                            error: function(xhr) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                if (modal) {
+                                    var activeElement = document.activeElement;
+                                    modal.hide();
+                                    if (activeElement && activeElement.blur) {
+                                        activeElement.blur();
+                                    }
+                                }
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: xhr.responseJSON?.message ||
+                                        'Gagal mengimport data'
+                                });
+                            },
                             complete: function() {
                                 submitBtn.prop('disabled', false).html(
                                     '<i class="fas fa-upload me-1"></i> Upload');

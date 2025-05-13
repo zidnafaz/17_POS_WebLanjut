@@ -116,6 +116,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/detail_ajax', [ProductController::class, 'detail_ajax'])->name('products.detail_ajax');
         Route::get('/import', [ProductController::class, 'import'])->name('products.import');
         Route::post('/import_ajax', [ProductController::class, 'import_ajax'])->name('products.import_ajax');
+        Route::get('/export_excel', [ProductController::class, 'export_excel'])->name('products.export_excel');
+        Route::get('/export_pdf', [ProductController::class, 'export_pdf'])->name('products.export_pdf');
     });
 
     // --------------------------
