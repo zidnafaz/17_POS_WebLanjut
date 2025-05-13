@@ -100,6 +100,11 @@ class AppServiceProvider extends ServiceProvider
                     if (in_array($role, ['ADM', 'MNG', 'STF'])) {
                         $menus[] = ['header' => 'Data Transaksi'];
                         $menus[] = [
+                            'text' => 'Stok Barang',
+                            'url' => '/stok',
+                            'icon' => 'fas fa-fw fa-cogs', // Ikon untuk Stok Barang
+                        ];
+                        $menus[] = [
                             'text' => 'Transaksi Penjualan',
                             'url' => '/penjualan',
                             'icon' => 'fas fa-fw fa-cash-register',
