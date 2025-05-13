@@ -12,11 +12,11 @@ use App\Http\Controllers\AuthController;
 
 Route::get('/', [AuthController::class, 'login'])->name('auth.login');
 
-Route::pattern('id','[0-9e]+');
+Route::pattern('id', '[0-9e]+');
 
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
-Route::get('logout', [AuthController::class,'logout'])->middleware('auth');
+Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::get('register', [AuthController::class, 'register'])->name('register');
 Route::post('register', [AuthController::class, 'postRegister'])->name('postRegister');
@@ -114,8 +114,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/confirm_ajax', [ProductController::class, 'confirm_ajax'])->name('products.confirm_ajax');
         Route::delete('/{id}/delete_ajax', [ProductController::class, 'delete_ajax'])->name('products.delete_ajax');
         Route::get('/{id}/detail_ajax', [ProductController::class, 'detail_ajax'])->name('products.detail_ajax');
-        Route::get('/import', [ProductController::class, 'import']);
-        Route::get('/import_ajax', [ProductController::class, 'import_ajax']);
+        Route::get('/import', [ProductController::class, 'import'])->name('products.import');
+        Route::post('/import_ajax', [ProductController::class, 'import_ajax'])->name('products.import_ajax');
     });
 
     // --------------------------

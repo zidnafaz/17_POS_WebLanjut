@@ -4,70 +4,79 @@
 @section('subtitle', 'Products')
 
 @push('css')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-    .card-header {
-        padding: 0.75rem 1.25rem;
-        font-weight: 600;
-    }
-    .table thead th {
-        vertical-align: middle;
-    }
-</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .card-header {
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+        }
+
+        .table thead th {
+            vertical-align: middle;
+        }
+    </style>
 @endpush
 
 @section('content_header')
-<div class="container-fluid">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}">Beranda</a></li>
-            <li class="breadcrumb-item active">Products</li>
-        </ol>
-    </nav>
-</div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url('/') }}">Beranda</a></li>
+                <li class="breadcrumb-item active">Products</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
 
 @section('content')
-<div class="container-fluid">
-    {{-- Page Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Manajemen Produk</h2>
-        <button class="btn btn-primary" onclick="modalAction('{{ route('products.create_ajax') }}')">
-            <i class="fas fa-plus"></i> Tambah Produk
-        </button>
-        <button class="btn btn-primary" onclick="modalAction('{{ route('products.import') }}')">
-            <i class="fas fa-plus"></i> Import Produk
-        </button>
-    </div>
-
-    {{-- Main Card --}}
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="card-title mb-0">Daftar Produk</h3>
-        </div>
-
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="kategori_id" class="form-label">Filter Kategori:</label>
-                <select id="kategori_id" class="form-select" aria-label="Filter Kategori">
-                    <option value="">-- Semua Kategori --</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->kategori_id }}">{{ $category->kategori_nama }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="table-responsive">
-                {{ $dataTable->table([
-                    'class' => 'table table-hover table-bordered table-striped',
-                    'style' => 'width:100%'
-                ]) }}
+    <div class="container-fluid">
+        {{-- Page Header --}}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Manajemen Produk</h2>
+            <div>
+                <button class="btn btn-success me-2" onclick="modalAction('{{ route('products.import') }}')">
+                    <i class="fas fa-file-import"></i> Import Produk
+                </button>
+                <button class="btn btn-primary" onclick="modalAction('{{ route('products.create_ajax') }}')">
+                    <i class="fas fa-plus"></i> Tambah Produk
+                </button>
             </div>
         </div>
-    </div>
 
-    {{-- Modal --}}
-    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-</div>
+        {{-- Main Card --}}
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">Daftar Produk</h3>
+            </div>
+
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="kategori_id" class="form-label">Filter Kategori:</label>
+                    <select id="kategori_id" class="form-select" aria-label="Filter Kategori">
+                        <option value="">-- Semua Kategori --</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->kategori_id }}">{{ $category->kategori_nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    {{ $dataTable->table([
+                        'class' => 'table table-hover table-bordered table-striped',
+                        'style' => 'width:100%',
+                    ]) }}
+                </div>
+            </div>
+        </div>
+
+        {{-- Di bagian bawah sebelum penutup scripts --}}
+        <div id="myModal" class="modal fade" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Konten modal akan diisi secara dinamis -->
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -77,15 +86,13 @@
             $.get(url)
                 .done(function(response) {
                     $('#myModal').html(response);
-
-                    // Initialize Bootstrap 5 modal
                     var modal = new bootstrap.Modal(document.getElementById('myModal'));
                     modal.show();
 
-                    // Reset form event listener first
-                    $(document).off('submit', '#formCreateProduct, #formEditProduct');
+                    // Reset semua event listener
+                    $(document).off('submit', '#formCreateProduct, #formEditProduct, #form-import');
 
-                    // Handle form submit (both create & edit)
+                    // Handle form submit biasa (create/edit)
                     $(document).on('submit', '#formCreateProduct, #formEditProduct', function(e) {
                         e.preventDefault();
                         var form = $(this);
@@ -108,7 +115,54 @@
                                 });
                             },
                             error: function(xhr) {
-                                Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan data.', 'error');
+                                Swal.fire('Error!', xhr.responseJSON?.message ||
+                                    'Gagal menyimpan data.', 'error');
+                            }
+                        });
+                    });
+
+                    // Handle form import khusus
+                    $(document).on('submit', '#form-import', function(e) {
+                        e.preventDefault();
+                        var form = $(this);
+                        var formData = new FormData(form[0]);
+                        var submitBtn = form.find('button[type="submit"]');
+
+                        submitBtn.prop('disabled', true).html(
+                            '<i class="fas fa-spinner fa-spin me-1"></i> Memproses...');
+
+                        $.ajax({
+                            url: form.attr('action'),
+                            method: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.LaravelDataTables["product-table"].ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: xhr.responseJSON?.message ||
+                                        'Gagal mengimport data'
+                                });
+                            },
+                            complete: function() {
+                                submitBtn.prop('disabled', false).html(
+                                    '<i class="fas fa-upload me-1"></i> Upload');
                             }
                         });
                     });

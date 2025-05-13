@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\KategoriModel;
 use App\Models\BarangModel;
 use App\DataTables\ProductDataTable;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -141,5 +144,92 @@ class ProductController extends Controller
         $product = BarangModel::findOrFail($id);
         $categories = KategoriModel::all();
         return view('product.edit_ajax', compact('product', 'categories'));
+    }
+
+    public function import()
+    {
+        return view('product.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        $request->validate([
+            'file_barang' => 'required|mimes:xlsx,xls|max:2048'
+        ]);
+
+        try {
+            $file = $request->file('file_barang');
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, true, true, true);
+
+            $insertData = [];
+            $errors = [];
+
+            foreach ($data as $row => $values) {
+                // Skip header row (assuming row 1 is header)
+                if ($row == 1) continue;
+
+                // Validate each row
+                $validator = Validator::make([
+                    'kategori_id' => $values['A'],
+                    'barang_kode' => $values['B'],
+                    'barang_nama' => $values['C'],
+                    'harga_beli' => $values['D'],
+                    'harga_jual' => $values['E']
+                ], [
+                    'kategori_id' => 'required|exists:m_kategori,kategori_id',
+                    'barang_kode' => 'required|string|max:255|unique:m_barang,barang_kode',
+                    'barang_nama' => 'required|string|max:255',
+                    'harga_beli' => 'required|numeric',
+                    'harga_jual' => 'required|numeric'
+                ]);
+
+                if ($validator->fails()) {
+                    $errors[] = "Baris $row: " . implode(', ', $validator->errors()->all());
+                    continue;
+                }
+
+                $insertData[] = [
+                    'kategori_id' => $values['A'],
+                    'barang_kode' => $values['B'],
+                    'barang_nama' => $values['C'],
+                    'harga_beli' => $values['D'],
+                    'harga_jual' => $values['E'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }
+
+            if (!empty($errors)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Beberapa data tidak valid',
+                    'errors' => $errors
+                ], 422);
+            }
+
+            if (empty($insertData)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang valid untuk diimport'
+                ], 422);
+            }
+
+            // Insert in chunks for better performance
+            BarangModel::insert($insertData);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diimport',
+                'count' => count($insertData)
+            ], 200, ['Content-Type' => 'application/json']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan saat memproses file',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
