@@ -92,9 +92,9 @@
         </tr>
     </table>
 
-    <h3 class="text-center">LAPORAN DATA Level</h3>
+    <h3 class="text-center">LAPORAN DATA USER</h3>
     
-    <table>
+    <table class="border-all">
         <thead>
             <tr>
                 <th class="text-center">No</th>

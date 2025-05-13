@@ -23,9 +23,9 @@
 
                 <div class="mb-3">
                     <label for="file_barang" class="form-label">Pilih File Excel</label>
-                    <input type="file" class="form-control" id="file_barang" name="file_barang" required
+                    <input type="file" class="form-control" id="file_level" name="file_level" required
                         accept=".xlsx,.xls">
-                    <div id="error-file_barang" class="invalid-feedback"></div>
+                    <div id="error-file_level" class="invalid-feedback"></div>
                 </div>
             </div>
             <div class="modal-footer">

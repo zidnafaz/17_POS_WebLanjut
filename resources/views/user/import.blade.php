@@ -22,10 +22,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="file_barang" class="form-label">Pilih File Excel</label>
-                    <input type="file" class="form-control" id="file_barang" name="file_barang" required
+                    <label for="file_user" class="form-label">Pilih File Excel</label>
+                    <input type="file" class="form-control" id="file_user" name="file_user" required
                         accept=".xlsx,.xls">
-                    <div id="error-file_barang" class="invalid-feedback"></div>
+                    <div id="error-file_user" class="invalid-feedback"></div>
                 </div>
             </div>
             <div class="modal-footer">
