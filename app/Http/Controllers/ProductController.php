@@ -336,6 +336,9 @@ class ProductController extends Controller
         // Enable remote assets if needed
         $pdf->setOption('isRemoteEnabled', true);
 
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('chroot', base_path('public'));
+
         // Render and stream the PDF
         return $pdf->stream('Data Barang ' . date('Y-m-d H:i:s') . '.pdf');
     }

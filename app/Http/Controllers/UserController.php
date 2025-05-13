@@ -378,6 +378,8 @@ class UserController extends Controller
 
         $pdf->setPaper('a4', 'portrait');
         $pdf->setOption('isRemoteEnabled', true);
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('chroot', base_path('public'));
 
         return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
     }

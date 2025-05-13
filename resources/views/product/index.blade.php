@@ -35,13 +35,13 @@
             <h2 class="mb-0">Manajemen Produk</h2>
             <div>
                 <a class="btn btn-primary me-2" href="{{ route('products.export_pdf') }}">
-                    <i class="fas fa-file-excel"></i> Export Produk - PDF
+                    <i class="fa-solid fa-file-pdf"></i> Export Produk - PDF
                 </a>
                 <a class="btn btn-primary me-2" href="{{ route('products.export_excel') }}">
                     <i class="fas fa-file-excel"></i> Export Produk - Excel
                 </a>
                 <button class="btn btn-primary me-2" onclick="modalAction('{{ route('products.import') }}')">
-                    <i class="fas fa-file-import"></i> Import Produk
+                    <i class="fa-solid fa-file-arrow-up"></i> Import Produk
                 </button>
                 <button class="btn btn-primary" onclick="modalAction('{{ route('products.create_ajax') }}')">
                     <i class="fas fa-plus"></i> Tambah Produk

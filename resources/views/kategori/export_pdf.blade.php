@@ -78,7 +78,7 @@
     <table class="border-bottom-header">
         <tr>
             <td width="15%" class="text-center">
-                <img src="{{ url('img/polinema-pw.jpg') }}" alt="Logo Polinema" class="image">
+                <img src="{{ public_path('img/polinema-pw.jpg') }}" alt="Logo Polinema" class="image">
             </td>
             <td width="85%">
                 <span class="text-center d-block font-11 font-bold mb-1">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN

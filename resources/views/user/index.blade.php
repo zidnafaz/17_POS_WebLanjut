@@ -35,13 +35,13 @@
             <h2 class="mb-0">Manajemen User</h2>
             <div>
                 <a class="btn btn-primary me-2" href="{{ route('user.export_pdf') }}">
-                    <i class="fas fa-file-excel"></i> Export User - PDF
+                    <i class="fa-solid fa-file-pdf"></i> Export User - PDF
                 </a>
                 <a class="btn btn-primary me-2" href="{{ route('user.export_excel') }}">
-                    <i class="fas fa-file-excel"></i> Export User - Excel
+                    <i class="fa-solid fa-file-excel"></i> Export User - Excel
                 </a>
                 <button class="btn btn-primary me-2" onclick="modalAction('{{ route('user.import') }}')">
-                    <i class="fas fa-file-import"></i> Import User
+                    <i class="fa-solid fa-file-arrow-up"></i> Import User
                 </button>
                 <button onclick="modalAction('{{ route('user.create_ajax') }}')" class="btn btn-primary">
                     <i class="fas fa-plus me-2"></i>Tambah User

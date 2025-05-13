@@ -35,13 +35,13 @@
             <h2 class="mb-0">Manajemen Suplier</h2>
             <div>
                 <a class="btn btn-primary me-2" href="{{ route('suplier.export_pdf') }}">
-                    <i class="fas fa-file-excel"></i> Export Suplier - PDF
+                    <i class="fa-solid fa-file-pdf"></i> Export Suplier - PDF
                 </a>
                 <a class="btn btn-primary me-2" href="{{ route('suplier.export_excel') }}">
-                    <i class="fas fa-file-excel"></i> Export Suplier - Excel
+                    <i class="fa-solid fa-file-excel"></i> Export Suplier - Excel
                 </a>
                 <button class="btn btn-primary me-2" onclick="modalAction('{{ route('suplier.import') }}')">
-                    <i class="fas fa-file-import"></i> Import Suplier
+                    <i class="fa-solid fa-file-arrow-up"></i> Import Suplier
                 </button>
                 <button class="btn btn-primary" onclick="modalAction('{{ route('suplier.create_ajax') }}')">
                     <i class="fas fa-plus"></i> Tambah Suplier
@@ -76,29 +76,6 @@
         </div>
     </div>
 @endsection
-
-{{-- @push('scripts')
-    {{ $dataTable->scripts() }}
-    <script>
-        function modalAction(url) {
-            $.get(url, function(response) {
-                $('#myModal').html(response);
-                var myModal = new bootstrap.Modal(document.getElementById('myModal'));
-                myModal.show();
-            }).fail(function() {
-                alert('Gagal memuat modal.');
-            });
-        }
-
-        $(document).ready(function() {
-            // Add margin to DataTable buttons
-            $('.dt-buttons').addClass('mb-3');
-
-            // Initialize tooltips
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-    </script>
-@endpush --}}
 
 @push('scripts')
     {{ $dataTable->scripts() }}

@@ -35,13 +35,13 @@
             <h2 class="mb-0">Manajemen Kategori</h2>
             <div>
                 <a class="btn btn-primary me-2" href="{{ route('kategori.export_pdf') }}">
-                    <i class="fas fa-file-excel"></i> Export Kategori - PDF
+                    <i class="fa-solid fa-file-pdf"></i> Export Kategori - PDF
                 </a>
                 <a class="btn btn-primary me-2" href="{{ route('kategori.export_excel') }}">
                     <i class="fas fa-file-excel"></i> Export Kategori - Excel
                 </a>
                 <button class="btn btn-primary me-2" onclick="modalAction('{{ route('kategori.import') }}')">
-                    <i class="fas fa-file-import"></i> Import Kategori
+                    <i class="fa-solid fa-file-arrow-up"></i> Import Kategori
                 </button>
                 <button onclick="modalAction('{{ route('kategori.create_ajax') }}')" class="btn btn-primary">
                     <i class="fas fa-plus me-2"></i>Tambah Kategori
