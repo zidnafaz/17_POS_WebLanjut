@@ -152,19 +152,23 @@
                                     window.LaravelDataTables["product-table"].ajax.reload();
                                 });
                             },
-                            error: function(xhr) {
-                                var modalEl = document.getElementById('myModal');
-                                var modal = bootstrap.Modal.getInstance(modalEl);
-                                if (modal) {
-                                    modal.hide();
-                                }
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: xhr.responseJSON?.message ||
-                                        'Gagal mengimport data'
-                                });
-                            },
+error: function(xhr) {
+    var modalEl = document.getElementById('myModal');
+    var modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+        var activeElement = document.activeElement;
+        modal.hide();
+        if (activeElement && activeElement.blur) {
+            activeElement.blur();
+        }
+    }
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: xhr.responseJSON?.message ||
+            'Gagal mengimport data'
+    });
+},
                             complete: function() {
                                 submitBtn.prop('disabled', false).html(
                                     '<i class="fas fa-upload me-1"></i> Upload');
