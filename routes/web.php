@@ -86,6 +86,10 @@ Route::middleware(['auth'])->group(function () {
     // Kategori - ADM, MNG, STF
     // --------------------------
     Route::prefix('kategori')->middleware('authorize:ADM,MNG,STF')->group(function () {
+        Route::get('/import', [KategoriController::class, 'import'])->name('kategori.import');
+        Route::post('/import_ajax', [KategoriController::class, 'import_ajax'])->name('kategori.import_ajax');
+        Route::get('/export_excel', [KategoriController::class, 'export_excel'])->name('kategori.export_excel');
+        Route::get('/export_pdf', [KategoriController::class, 'export_pdf'])->name('kategori.export_pdf');
         Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
         Route::post('/', [KategoriController::class, 'store'])->name('kategori.store');
         Route::get('/create', [KategoriController::class, 'create'])->name('kategori.create');

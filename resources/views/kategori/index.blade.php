@@ -32,9 +32,20 @@
     {{-- Page Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Manajemen Kategori</h2>
-        <button onclick="modalAction('{{ route('kategori.create_ajax') }}')" class="btn btn-primary">
-            <i class="fas fa-plus mr-2"></i>Tambah Kategori
-        </button>
+        <div>
+            <a class="btn btn-primary me-2" href="{{ route('kategori.export_pdf') }}">
+                <i class="fas fa-file-excel"></i> Export Kategori - PDF
+            </a>
+            <a class="btn btn-primary me-2" href="{{ route('kategori.export_excel') }}">
+                <i class="fas fa-file-excel"></i> Export Kategori - Excel
+            </a>
+            <button class="btn btn-primary me-2" onclick="modalAction('{{ route('kategori.import') }}')">
+                <i class="fas fa-file-import"></i> Import Kategori
+            </button>
+            <button onclick="modalAction('{{ route('kategori.create_ajax') }}')" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Tambah Kategori
+            </button>
+        </div>
     </div>
 
     {{-- Main Card --}}
@@ -60,12 +71,100 @@
     {{ $dataTable->scripts() }}
     <script>
         function modalAction(url) {
-            $.get(url, function(response) {
-                $('#myModal').html(response);
-                $('#myModal').modal('show');
-            }).fail(function() {
-                alert('Gagal memuat modal.');
-            });
+            $.get(url)
+                .done(function(response) {
+                    $('#myModal').html(response);
+                    var modal = new bootstrap.Modal(document.getElementById('myModal'));
+                    modal.show();
+
+                    // Reset all event listeners
+                    $(document).off('submit', '#formCreateKategori, #formEditKategori, #form-import');
+
+                    // Handle create/edit form submit
+                    $(document).on('submit', '#formCreateKategori, #formEditKategori', function(e) {
+                        e.preventDefault();
+                        var form = $(this);
+
+                        $.ajax({
+                            url: form.attr('action'),
+                            method: form.find('input[name="_method"]').val() || form.attr('method'),
+                            data: form.serialize(),
+                            success: function(res) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+                                window.LaravelDataTables["kategori-table"].ajax.reload();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: 'Kategori berhasil disimpan.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan data.', 'error');
+                            }
+                        });
+                    });
+
+                    // Handle import form submit
+                    $(document).on('submit', '#form-import', function(e) {
+                        e.preventDefault();
+                        var form = $(this);
+                        var formData = new FormData(form[0]);
+                        var submitBtn = form.find('button[type="submit"]');
+
+                        submitBtn.prop('disabled', true).html(
+                            '<i class="fas fa-spinner fa-spin me-1"></i> Memproses...');
+
+                        $.ajax({
+                            url: form.attr('action'),
+                            method: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.LaravelDataTables["kategori-table"].ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                if (modal) {
+                                    var activeElement = document.activeElement;
+                                    modal.hide();
+                                    if (activeElement && activeElement.blur) {
+                                        activeElement.blur();
+                                    }
+                                }
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: xhr.responseJSON?.message || 'Gagal mengimport data'
+                                });
+                            },
+                            complete: function() {
+                                submitBtn.prop('disabled', false).html(
+                                    '<i class="fas fa-upload me-1"></i> Upload');
+                            }
+                        });
+                    });
+                })
+                .fail(function(xhr) {
+                    Swal.fire('Error!', 'Gagal memuat form: ' + xhr.statusText, 'error');
+                });
         }
 
         $(document).ready(function() {
@@ -74,6 +173,8 @@
 
             // Initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
+
+            // Additional initialization if needed
         });
     </script>
 @endpush
