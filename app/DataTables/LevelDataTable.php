@@ -24,22 +24,20 @@ class LevelDataTable extends DataTable
                 $detailUrl = route('level.detail_ajax', $row->level_id);
                 $editUrl = route('level.edit_ajax', $row->level_id);
                 $deleteUrl = route('level.confirm_ajax', $row->level_id);
-
-                $buttons = <<<EOT
-<div class="d-flex justify-content-center gap-2" style="white-space: nowrap;">
-    <button onclick="modalAction('{$detailUrl}')" class="btn btn-sm btn-info" style="margin-left: 5px;">
-        <i class="fas fa-info-circle"></i> Detail
-    </button>
-    <button onclick="modalAction('{$editUrl}')" class="btn btn-sm btn-primary" style="margin-left: 5px;">
-        <i class="fas fa-edit"></i> Ubah
-    </button>
-    <button onclick="modalAction('{$deleteUrl}')" class="btn btn-sm btn-danger" style="margin-left: 5px;">
-        <i class="fas fa-trash"></i> Hapus
-    </button>
-</div>
-EOT;
-
-                return $buttons;
+               
+                return '
+                    <div class="d-flex justify-content-center gap-2" style="white-space: nowrap;">
+                        <button onclick="modalAction(\'' . $detailUrl . '\')" class="btn btn-sm btn-info" style="margin-left: 5px;">
+                            <i class="fas fa-info-circle"></i> Detail
+                        </button>
+                        <button onclick="modalAction(\'' . $editUrl . '\')" class="btn btn-sm btn-primary" style="margin-left: 5px;">
+                            <i class="fas fa-edit"></i> Ubah
+                        </button>
+                        <button onclick="modalAction(\'' . $deleteUrl . '\')" class="btn btn-sm btn-danger" style="margin-left: 5px;">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                ';
             })
             ->rawColumns(['aksi']) // Important: allow HTML in aksi column
             ->setRowId('level_id');
@@ -53,8 +51,8 @@ EOT;
         $query = $model->newQuery();
 
         // Add filter if needed, e.g. by level_kode or other fields
-        if (request()->has('level_kode') && request('level_kode') != '') {
-            $query->where('level_kode', 'like', '%' . request('level_kode') . '%');
+        if (request()->has('level_id') && request('level_id') != '') {
+            $query->where('level_id', request('level_id'));
         }
 
         return $query;
@@ -69,8 +67,8 @@ EOT;
             ->setTableId('level-table')
             ->columns($this->getColumns())
             ->ajax([
-                'url' => route('level.index'),
-                'data' => "function(d) { d.level_kode = $('#level_kode').val(); }"
+                'url' => route('level.getLevels'),
+                'data' => "function(d) { d.level_id = $('#level_id').val(); }"
             ])
             ->orderBy(1)
             ->buttons([

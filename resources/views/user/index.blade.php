@@ -75,7 +75,7 @@
                 </div>
             </div>
         </div>
-        
+
         {{-- Di bagian bawah sebelum penutup scripts --}}
         <div id="myModal" class="modal fade" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
@@ -89,115 +89,117 @@
 
 @push('scripts')
     {{ $dataTable->scripts() }}
-        <script>
-            function modalAction(url) {
-                $.get(url)
-                    .done(function(response) {
-                        $('#myModal').html(response);
-                        var modal = new bootstrap.Modal(document.getElementById('myModal'));
-                        modal.show();
+    <script>
+        function modalAction(url) {
+            $.get(url)
+                .done(function(response) {
+                    $('#myModal').html(response);
+                    var modal = new bootstrap.Modal(document.getElementById('myModal'));
+                    modal.show();
 
-                        // Reset all event listeners
-                        $(document).off('submit', '#formCreateUser, #formEditUser, #form-import');
+                    // Reset all event listeners
+                    $(document).off('submit', '#formCreateUser, #formEditUser, #form-import');
 
-                        // Handle create/edit form submit
-                        $(document).on('submit', '#formCreateUser, #formEditUser', function(e) {
-                            e.preventDefault();
-                            var form = $(this);
+                    // Handle create/edit form submit
+                    $(document).on('submit', '#formCreateUser, #formEditUser', function(e) {
+                        e.preventDefault();
+                        var form = $(this);
 
-                            $.ajax({
-                                url: form.attr('action'),
-                                method: form.find('input[name="_method"]').val() || form.attr('method'),
-                                data: form.serialize(),
-                                success: function(res) {
-                                    var modalEl = document.getElementById('myModal');
-                                    var modal = bootstrap.Modal.getInstance(modalEl);
-                                    modal.hide();
-                                    window.LaravelDataTables["user-table"].ajax.reload();
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Sukses',
-                                        text: 'User berhasil disimpan.',
-                                        timer: 2000,
-                                        showConfirmButton: false
-                                    });
-                                },
-                                error: function(xhr) {
-                                    Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan data.', 'error');
-                                }
-                            });
+                        $.ajax({
+                            url: form.attr('action'),
+                            method: form.find('input[name="_method"]').val() || form.attr('method'),
+                            data: form.serialize(),
+                            success: function(res) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+                                window.LaravelDataTables["user-table"].ajax.reload();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: 'User berhasil disimpan.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Error!', xhr.responseJSON?.message ||
+                                    'Gagal menyimpan data.', 'error');
+                            }
                         });
-
-                        // Handle import form submit
-                        $(document).on('submit', '#form-import', function(e) {
-                            e.preventDefault();
-                            var form = $(this);
-                            var formData = new FormData(form[0]);
-                            var submitBtn = form.find('button[type="submit"]');
-
-                            submitBtn.prop('disabled', true).html(
-                                '<i class="fas fa-spinner fa-spin me-1"></i> Memproses...');
-
-                            $.ajax({
-                                url: form.attr('action'),
-                                method: 'POST',
-                                data: formData,
-                                processData: false,
-                                contentType: false,
-                                success: function(response) {
-                                    var modalEl = document.getElementById('myModal');
-                                    var modal = bootstrap.Modal.getInstance(modalEl);
-                                    modal.hide();
-
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Sukses',
-                                        text: response.message,
-                                        timer: 2000,
-                                        showConfirmButton: false
-                                    }).then(() => {
-                                        window.LaravelDataTables["user-table"].ajax.reload();
-                                    });
-                                },
-                                error: function(xhr) {
-                                    var modalEl = document.getElementById('myModal');
-                                    var modal = bootstrap.Modal.getInstance(modalEl);
-                                    if (modal) {
-                                        var activeElement = document.activeElement;
-                                        modal.hide();
-                                        if (activeElement && activeElement.blur) {
-                                            activeElement.blur();
-                                        }
-                                    }
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: xhr.responseJSON?.message || 'Gagal mengimport data'
-                                    });
-                                },
-                                complete: function() {
-                                    submitBtn.prop('disabled', false).html(
-                                        '<i class="fas fa-upload me-1"></i> Upload');
-                                }
-                            });
-                        });
-                    })
-                    .fail(function(xhr) {
-                        Swal.fire('Error!', 'Gagal memuat form: ' + xhr.statusText, 'error');
                     });
-            }
 
-            $(document).ready(function() {
-                // Add margin to DataTable buttons
-                $('.dt-buttons').addClass('mb-3');
+                    // Handle import form submit
+                    $(document).on('submit', '#form-import', function(e) {
+                        e.preventDefault();
+                        var form = $(this);
+                        var formData = new FormData(form[0]);
+                        var submitBtn = form.find('button[type="submit"]');
 
-                // Initialize tooltips
-                $('[data-toggle="tooltip"]').tooltip();
+                        submitBtn.prop('disabled', true).html(
+                            '<i class="fas fa-spinner fa-spin me-1"></i> Memproses...');
 
-                // Reload DataTable on level filter change
-                $('#level_id').change(function() {
-                    window.LaravelDataTables["user-table"].draw();
+                        $.ajax({
+                            url: form.attr('action'),
+                            method: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.LaravelDataTables["user-table"].ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                if (modal) {
+                                    var activeElement = document.activeElement;
+                                    modal.hide();
+                                    if (activeElement && activeElement.blur) {
+                                        activeElement.blur();
+                                    }
+                                }
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: xhr.responseJSON?.message ||
+                                        'Gagal mengimport data'
+                                });
+                            },
+                            complete: function() {
+                                submitBtn.prop('disabled', false).html(
+                                    '<i class="fas fa-upload me-1"></i> Upload');
+                            }
+                        });
+                    });
+                })
+                .fail(function(xhr) {
+                    Swal.fire('Error!', 'Gagal memuat form: ' + xhr.statusText, 'error');
                 });
+        }
+
+        $(document).ready(function() {
+            // Add margin to DataTable buttons
+            $('.dt-buttons').addClass('mb-3');
+
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Reload DataTable on level filter change
+            $('#level_id').change(function() {
+                window.LaravelDataTables["user-table"].draw();
             });
-        </script>
+        });
+    </script>
 @endpush

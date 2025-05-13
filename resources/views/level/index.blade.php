@@ -76,14 +76,21 @@
             </div>
         </div>
 
-        {{-- Modal --}}
-        <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+        {{-- Di bagian bawah sebelum penutup scripts --}}
+        <div id="myModal" class="modal fade" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Konten modal akan diisi secara dinamis -->
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
     {!! $dataTable->scripts() !!}
     <script>
+
         function modalAction(url) {
             $.get(url)
                 .done(function(response) {
@@ -107,7 +114,7 @@
                                 var modalEl = document.getElementById('myModal');
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
-                                window.LaravelDataTables["level-table"].draw();
+                                window.LaravelDataTables["level-table"].ajax.reload();
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Sukses',
@@ -117,7 +124,8 @@
                                 });
                             },
                             error: function(xhr) {
-                                Swal.fire('Error!', xhr.responseJSON?.message || 'Gagal menyimpan data.', 'error');
+                                Swal.fire('Error!', xhr.responseJSON?.message ||
+                                    'Gagal menyimpan data.', 'error');
                             }
                         });
                     });
@@ -150,7 +158,7 @@
                                     timer: 2000,
                                     showConfirmButton: false
                                 }).then(() => {
-                                    window.LaravelDataTables["level-table"].draw();
+                                    window.LaravelDataTables["level-table"].ajax.reload();
                                 });
                             },
                             error: function(xhr) {
@@ -166,7 +174,8 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error',
-                                    text: xhr.responseJSON?.message || 'Gagal mengimport data'
+                                    text: xhr.responseJSON?.message ||
+                                        'Gagal mengimport data'
                                 });
                             },
                             complete: function() {
@@ -175,15 +184,23 @@
                             }
                         });
                     });
-
-                    // Reload DataTable on filter change
-                    $('#level_kode').change(function() {
-                        window.LaravelDataTables["level-table"].draw();
-                    });
                 })
                 .fail(function(xhr) {
                     Swal.fire('Error!', 'Gagal memuat form: ' + xhr.statusText, 'error');
                 });
         }
+
+        $(document).ready(function() {
+            // Add margin to DataTable buttons
+            $('.dt-buttons').addClass('mb-3');
+
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Reload DataTable on level filter change
+            $('#level_id').change(function() {
+                window.LaravelDataTables["level-table"].draw();
+            });
+        });
     </script>
 @endpush

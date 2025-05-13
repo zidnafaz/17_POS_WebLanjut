@@ -16,8 +16,8 @@ class LevelController extends Controller
 
     public function index(LevelDataTable $dataTable)
     {
-        $levels = \App\Models\LevelModel::all();
-        return $dataTable->render('level.index', compact('levels'));
+        $level_id = \App\Models\LevelModel::all();
+        return $dataTable->render('level.index', compact('level_id'));
     }
 
     public function detail_ajax(string $id)
@@ -26,21 +26,10 @@ class LevelController extends Controller
         return view('level.detail_ajax', ['level' => $level]);
     }
 
-    // Commenting out getLevels as DataTable service handles ajax
-    /*
-    public function getLevels(Request $request)
+    public function getLevels(LevelDataTable $dataTable)
     {
-        if ($request->ajax()) {
-            $query = LevelModel::query();
-
-            return DataTables::of($query)
-                ->addColumn('id', function ($level) {
-                    return $level->level_id;
-                })
-                ->make(true);
-        }
+        return $dataTable->ajax();
     }
-    */
 
     public function create_ajax()
     {
