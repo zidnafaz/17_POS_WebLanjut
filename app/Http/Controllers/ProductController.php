@@ -164,13 +164,23 @@ class ProductController extends Controller
             $data = $sheet->toArray(null, true, true, true);
 
             $insertData = [];
+            $skippedData = [];
             $errors = [];
+
+            // Ambil semua barang_kode yang sudah ada di database sekaligus
+            $existingCodes = BarangModel::pluck('barang_kode')->toArray();
 
             foreach ($data as $row => $values) {
                 // Skip header row (assuming row 1 is header)
                 if ($row == 1) continue;
 
-                // Validate each row
+                // Skip jika barang_kode sudah ada
+                if (in_array($values['B'], $existingCodes)) {
+                    $skippedData[] = "Baris $row: Barang dengan kode {$values['B']} sudah ada dan akan diabaikan";
+                    continue;
+                }
+
+                // Validate each row (tanpa validasi unique untuk barang_kode)
                 $validator = Validator::make([
                     'kategori_id' => $values['A'],
                     'barang_kode' => $values['B'],
@@ -179,7 +189,7 @@ class ProductController extends Controller
                     'harga_jual' => $values['E']
                 ], [
                     'kategori_id' => 'required|exists:m_kategori,kategori_id',
-                    'barang_kode' => 'required|string|max:255|unique:m_barang,barang_kode',
+                    'barang_kode' => 'required|string|max:255',
                     'barang_nama' => 'required|string|max:255',
                     'harga_beli' => 'required|numeric',
                     'harga_jual' => 'required|numeric'
@@ -199,31 +209,39 @@ class ProductController extends Controller
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
+
+                // Tambahkan kode baru ke array existingCodes untuk pengecekan duplikat dalam file yang sama
+                $existingCodes[] = $values['B'];
             }
 
-            if (!empty($errors)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Beberapa data tidak valid',
-                    'errors' => $errors
-                ], 422);
-            }
+            // Gabungkan skipped data dengan errors untuk informasi
+            $allMessages = array_merge($skippedData, $errors);
 
             if (empty($insertData)) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Tidak ada data yang valid untuk diimport'
+                    'message' => 'Tidak ada data baru yang valid untuk diimport',
+                    'info' => $allMessages
                 ], 422);
             }
 
-            // Insert in chunks for better performance
-            BarangModel::insert($insertData);
+            // Gunakan insertOrIgnore untuk mengabaikan data yang duplicate
+            $insertedCount = BarangModel::insertOrIgnore($insertData);
 
-            return response()->json([
+            $response = [
                 'status' => true,
-                'message' => 'Data berhasil diimport',
-                'count' => count($insertData)
-            ], 200, ['Content-Type' => 'application/json']);
+                'message' => 'Import data berhasil',
+                'inserted_count' => $insertedCount,
+                'skipped_count' => count($skippedData),
+                'info' => $allMessages
+            ];
+
+            // Jika ada error validasi (selain duplikat)
+            if (!empty($errors)) {
+                $response['error_count'] = count($errors);
+            }
+
+            return response()->json($response, 200, ['Content-Type' => 'application/json']);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
