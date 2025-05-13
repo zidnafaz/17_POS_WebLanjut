@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Yajra\DataTables\Html\Builder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
+use App\Models\UserModel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +23,100 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Builder::useVite();
+        view()->composer('*', function ($view) {
+            if (Auth::check()) {
+                $user = Auth::user();
+
+                if ($user instanceof UserModel) {
+                    $role = $user->getRole();
+
+                    $menus = [
+                        // Navbar search & fullscreen
+                        [
+                            'type' => 'navbar-search',
+                            'text' => 'search',
+                            'topnav_right' => false,
+                            'icon' => 'fas fa-fw fa-search',
+                        ],
+                        [
+                            'type' => 'fullscreen-widget',
+                            'topnav_right' => true,
+                            'icon' => 'fas fa-fw fa-expand-arrows-alt',
+                        ],
+
+                        // Sidebar search
+                        [
+                            'type' => 'sidebar-menu-search',
+                            'text' => 'search',
+                            'icon' => 'fas fa-fw fa-search',
+                        ],
+
+                        // Dashboard selalu tampil
+                        [
+                            'text' => 'Dashboard',
+                            'url' => '/',
+                            'icon' => 'fas fa-fw fa-tachometer-alt',
+                        ],
+                    ];
+
+                    // Tambahkan menu sesuai role
+                    if (in_array($role, ['ADM', 'MNG', 'STF'])) {
+                        $menus[] = ['header' => 'Data Produk'];
+                        $menus[] = [
+                            'text' => 'Kategori Produk',
+                            'url' => '/kategori',
+                            'icon' => 'fas fa-fw fa-th-large',
+                        ];
+                        $menus[] = [
+                            'text' => 'Daftar Produk',
+                            'url' => '/products',
+                            'icon' => 'fas fa-fw fa-cogs',
+                        ];
+                    }
+
+                    if (in_array($role, ['ADM', 'MNG'])) {
+                        $menus[] = ['header' => 'Data Suplier'];
+                        $menus[] = [
+                            'text' => 'Suplier',
+                            'url' => '/suplier',
+                            'icon' => 'fas fa-fw fa-box',
+                        ];
+                    }
+
+                    if ($role === 'ADM') {
+                        $menus[] = ['header' => 'Data User'];
+                        $menus[] = [
+                            'text' => 'Daftar User',
+                            'url' => '/user',
+                            'icon' => 'fas fa-fw fa-users',
+                        ];
+                        $menus[] = [
+                            'text' => 'Level User',
+                            'url' => '/level',
+                            'icon' => 'fas fa-fw fa-user-cog',
+                        ];
+                    }
+
+                    if (in_array($role, ['ADM', 'MNG', 'STF'])) {
+                        $menus[] = ['header' => 'Data Transaksi'];
+                        $menus[] = [
+                            'text' => 'Transaksi Penjualan',
+                            'url' => '/penjualan',
+                            'icon' => 'fas fa-fw fa-cash-register',
+                        ];
+                    }
+
+                    // Logout selalu tampil
+                    $menus[] = [
+                        'text' => 'Logout',
+                        'url' => 'logout',
+                        'icon' => 'fas fa-fw fa-sign-out-alt',
+                        'classes' => 'bg-danger',
+                    ];
+
+                    Config::set('adminlte.menu', $menus);
+                }
+            }
+        });
     }
 }
