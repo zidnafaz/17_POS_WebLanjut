@@ -83,15 +83,21 @@ Route::middleware(['auth'])->group(function () {
     // --------------------------
     // Suplier - ADM, MNG
     // --------------------------
-    Route::prefix('suplier')->middleware('authorize:ADM,MNG')->group(function () {
-        Route::get('/', [SuplierController::class, 'index'])->name('suplier.index');
-        Route::get('/create_ajax', [SuplierController::class, 'create_ajax'])->name('suplier.create_ajax');
-        Route::post('/store_ajax', [SuplierController::class, 'store_ajax'])->name('suplier.store_ajax');
-        Route::get('/{id}/edit_ajax', [SuplierController::class, 'edit_ajax'])->name('suplier.edit_ajax');
-        Route::put('/{id}/update_ajax', [SuplierController::class, 'update_ajax'])->name('suplier.update_ajax');
-        Route::get('/{id}/confirm_ajax', [SuplierController::class, 'confirm_ajax'])->name('suplier.confirm_ajax');
-        Route::delete('/{id}/delete_ajax', [SuplierController::class, 'delete_ajax'])->name('suplier.delete_ajax');
+    Route::prefix('suplier')->middleware('authorize:ADM,MNG')->group(function () {        
+        Route::get('/', [SuplierController::class, 'index'])->name('suplier.index');        
+        Route::get('/create_ajax', [SuplierController::class, 'create_ajax'])->name('suplier.create_ajax');        
+        Route::post('/store_ajax', [SuplierController::class, 'store_ajax'])->name('suplier.store_ajax');        
+        Route::get('/{id}/edit_ajax', [SuplierController::class, 'edit_ajax'])->name('suplier.edit_ajax');        
+        Route::put('/{id}/update_ajax', [SuplierController::class, 'update_ajax'])->name('suplier.update_ajax');        
+        Route::get('/{id}/confirm_ajax', [SuplierController::class, 'confirm_ajax'])->name('suplier.confirm_ajax');        
+        Route::delete('/{id}/delete_ajax', [SuplierController::class, 'delete_ajax'])->name('suplier.delete_ajax');        
         Route::get('/{id}/detail_ajax', [SuplierController::class, 'detail_ajax'])->name('suplier.detail_ajax');
+
+        // Import and Export routes
+        Route::get('/import', [SuplierController::class, 'import'])->name('suplier.import');
+        Route::post('/import_ajax', [SuplierController::class, 'import_ajax'])->name('suplier.import_ajax');
+        Route::get('/export_excel', [SuplierController::class, 'export_excel'])->name('suplier.export_excel');
+        Route::get('/export_pdf', [SuplierController::class, 'export_pdf'])->name('suplier.export_pdf');
     });
 
     // --------------------------
