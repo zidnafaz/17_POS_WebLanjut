@@ -28,7 +28,11 @@
                 method: 'POST',
                 data: form.serialize(),
                 success: function(response) {
-                    $('#myModal').modal('hide');
+                    var modalEl = document.getElementById('myModal');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
                     window.LaravelDataTables["user-table"].ajax.reload();
                     Swal.fire({
                         icon: 'success',

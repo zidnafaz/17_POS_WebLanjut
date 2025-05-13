@@ -108,11 +108,11 @@ class UserController extends Controller
 
             if ($validator->fails()) {
                 Log::warning('Validation failed in store_ajax', $validator->errors()->toArray());
-                return response()->json([
-                    'status' => false, // response status: false = gagal, true = berhasil
-                    'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(), // pesan error validasi
-                ]);
+            return response()->json([
+                'status' => false, // response status: false = gagal, true = berhasil
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors(), // pesan error validasi
+            ]);
             }
 
             try {
@@ -125,10 +125,10 @@ class UserController extends Controller
                 ]);
             } catch (\Exception $e) {
                 Log::error('Exception in store_ajax: ' . $e->getMessage());
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Terjadi kesalahan saat menyimpan data.'
-                ]);
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan data.'
+            ]);
             }
 
             return response()->json([
@@ -167,11 +167,11 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,    // respon json, true: berhasil, false: gagal
-                    'message' => 'Validasi gagal.',
-                    'msgField' => $validator->errors()  // menunjukkan field mana yang error
-                ]);
+            return response()->json([
+                'status' => false,    // respon json, true: berhasil, false: gagal
+                'message' => 'Validasi gagal.',
+                'msgField' => $validator->errors()  // menunjukkan field mana yang error
+            ]);
             }
 
             $check = UserModel::find($id);
