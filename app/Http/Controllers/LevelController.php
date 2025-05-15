@@ -10,6 +10,7 @@ use App\DataTables\LevelDataTable;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class LevelController extends Controller
 {
@@ -38,30 +39,53 @@ class LevelController extends Controller
 
     public function store_ajax(Request $request)
     {
-        $rules = [
-            'level_kode' => 'required|string|unique:m_level,level_kode',
-            'level_nama' => 'required|string|max:100',
-        ];
+        Log::info('store_ajax called', $request->all());
 
-        $validator = Validator::make($request->all(), $rules);
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'level_kode' => 'required|string|unique:m_level,level_kode',
+                'level_nama' => 'required|string|max:100',
+            ];
 
-        if ($validator->fails()) {
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                Log::error('Validation failed', $validator->errors()->toArray());
+                return response()->json([
+                    'status' => false,
+                    'alert' => 'error',
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors(),
+                ]);
+            }
+
+            try {
+                LevelModel::create([
+                    'level_kode' => $request->level_kode,
+                    'level_nama' => $request->level_nama,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Exception in store ajax: ' . $e->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'alert' => 'error',
+                    'message' => 'Gagal menyimpan data level',
+                ]);
+            }
+
             return response()->json([
-                'status' => false,
-                'message' => 'Validasi Gagal',
-                'msgField' => $validator->errors(),
+                'status' => true,
+                'alert' => 'success',
+                'message' => 'Data level berhasil disimpan'
             ]);
         }
 
-        LevelModel::create([
-            'level_kode' => $request->level_kode,
-            'level_nama' => $request->level_nama,
-        ]);
-
+        Log::warning('Invalid request in store_ajax');
         return response()->json([
-            'status' => true,
-            'message' => 'Data level berhasil disimpan'
-        ]);
+            'status' => false,
+            'alert' => 'error',
+            'message' => 'Request tidak valid'
+        ], 400);
     }
 
     public function edit_ajax(string $id)
@@ -84,6 +108,7 @@ class LevelController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
+                    'alert' => 'error',
                     'message' => 'Validasi gagal.',
                     'msgField' => $validator->errors()
                 ]);
@@ -94,11 +119,13 @@ class LevelController extends Controller
                 $level->update($request->all());
                 return response()->json([
                     'status' => true,
+                    'alert' => 'success',
                     'message' => 'Data berhasil diupdate'
                 ]);
             } else {
                 return response()->json([
                     'status' => false,
+                    'alert' => 'error',
                     'message' => 'Data tidak ditemukan'
                 ]);
             }
@@ -115,8 +142,8 @@ class LevelController extends Controller
     public function delete_ajax(Request $request, string $id)
     {
         $level = LevelModel::find($id);
+        $level->delete();
         if ($level) {
-            $level->delete();
             return response()->json([
                 'status' => true,
                 'message' => 'Data berhasil dihapus'
@@ -188,6 +215,7 @@ class LevelController extends Controller
             if (empty($insertData)) {
                 return response()->json([
                     'status' => false,
+                    'alert' => 'error',
                     'message' => 'Tidak ada data baru yang valid untuk diimport',
                     'info' => $allMessages
                 ], 422);
@@ -207,10 +235,12 @@ class LevelController extends Controller
                 $response['error_count'] = count($errors);
             }
 
+            $response['alert'] = 'success';
             return response()->json($response, 200, ['Content-Type' => 'application/json']);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
+                'alert' => 'error',
                 'message' => 'Terjadi kesalahan saat memproses file',
                 'error' => $e->getMessage()
             ], 500);
