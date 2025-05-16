@@ -320,20 +320,6 @@
             });
         });
     </script>
-
-    @if(session('logout_success'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Berhasil Logout',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        });
-    </script>
-    @endif
 </body>
 
 </html>

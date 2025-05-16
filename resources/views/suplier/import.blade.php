@@ -1,7 +1,7 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title">Import Data Produk</h5>
+            <h5 class="modal-title">Import Data Suplier</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="form-import" action="{{ route('suplier.import_ajax') }}" method="POST" enctype="multipart/form-data">

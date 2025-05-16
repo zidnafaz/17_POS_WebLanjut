@@ -59,13 +59,7 @@ class ProductController extends Controller
         $categories = KategoriModel::all();
         return $dataTable->render('product.index', compact('categories'));
     }
-
-    // public function create_ajax()
-    // {
-    //     $categories = KategoriModel::all();
-    //     return view('product.create_ajax', compact('categories'));
-    // }
-
+    
     public function store_ajax(Request $request)
     {
         Log::info('store_ajax called', $request->all());
@@ -120,13 +114,6 @@ class ProductController extends Controller
             'message' => 'Request tidak valid'
         ], 400);
     }
-
-    // public function edit_ajax($id)
-    // {
-    //     $product = BarangModel::findOrFail($id);
-    //     $categories = KategoriModel::all();
-    //     return view('product.edit_ajax', compact('product', 'categories'));
-    // }
 
     public function update_ajax(Request $request, $id)
     {

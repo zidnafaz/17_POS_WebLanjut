@@ -8,6 +8,8 @@ use App\DataTables\SuplierDataTable;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class SuplierController extends Controller
 {
@@ -23,47 +25,101 @@ class SuplierController extends Controller
 
     public function store_ajax(Request $request)
     {
-        $request->validate([
-            'kode_suplier' => 'required|string|max:10',
-            'nama_suplier' => 'required|string|max:100',
-            'no_telepon' => 'nullable|string|max:15',
-            'alamat' => 'nullable|string',
-        ]);
 
-        SuplierModel::create([
-            'kode_suplier' => $request->kode_suplier,
-            'nama_suplier' => $request->nama_suplier,
-            'no_telepon' => $request->no_telepon,
-            'alamat' => $request->alamat,
-        ]);
+        Log::info('store_ajax called', $request->all());
 
-        return response()->json(['success' => true]);
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'kode_suplier' => 'required|string|max:10|unique:m_suplier,kode_suplier',
+                'nama_suplier' => 'required|string|max:100',
+                'no_telepon' => 'nullable|string|max:15',
+                'alamat' => 'nullable|string',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                Log::error('Validation failed', $validator->errors()->toArray());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors(),
+                ]);
+            }
+
+            try {
+                SuplierModel::create([
+                    'kode_suplier' => $request->kode_suplier,
+                    'nama_suplier' => $request->nama_suplier,
+                    'no_telepon' => $request->no_telepon,
+                    'alamat' => $request->alamat,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Error in store ajax', ['error' => $e->getMessage()]);
+                return response()->json([
+                    'status' => false,
+                    'alert' => 'error',
+                    'message' => 'Terjadi kesalahan saat menyimpan data',
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'alert' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ]);
+        }
+
+        Log::warning('Invalid request in store_ajax');
+        return response()->json([
+            'status' => false,
+            'message' => 'Request tidak valid'
+        ], 400);
     }
 
     public function edit_ajax($id)
     {
-        $suplier = SuplierModel::findOrFail($id);
+        $suplier = SuplierModel::find($id);
         return view('suplier.edit_ajax', compact('suplier'));
     }
 
     public function update_ajax(Request $request, $id)
     {
-        $request->validate([
-            'kode_suplier' => 'required|string|max:10',
-            'nama_suplier' => 'required|string|max:100',
-            'no_telepon' => 'nullable|string|max:15',
-            'alamat' => 'nullable|string',
-        ]);
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'kode_suplier' => 'required|string|max:10',
+                'nama_suplier' => 'required|string|max:100',
+                'no_telepon' => 'nullable|string|max:15',
+                'alamat' => 'nullable|string',
+            ];
 
-        $suplier = SuplierModel::findOrFail($id);
-        $suplier->update([
-            'kode_suplier' => $request->kode_suplier,
-            'nama_suplier' => $request->nama_suplier,
-            'no_telepon' => $request->no_telepon,
-            'alamat' => $request->alamat,
-        ]);
+            $validator = Validator::make($request->all(), $rules);
 
-        return response()->json(['success' => true]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $suplier = SuplierModel::find($id);
+            if ($suplier) {
+                $suplier->update($request->all());
+                return response()->json([
+                    'status' => true,
+                    'alert' => 'success',
+                    'message' => 'Data berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'alert' => 'error',
+                    'message' => 'Data tidak ditemukan'
+                ]);
+            }
+        }
+        return redirect('/');
     }
 
     public function confirm_ajax($id)
@@ -77,7 +133,19 @@ class SuplierController extends Controller
         $suplier = SuplierModel::findOrFail($id);
         $suplier->delete();
 
-        return response()->json(['success' => true]);
+        if ($suplier) {
+            return response()->json([
+                'status' => true,
+                'alert' => 'success',
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'alert' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
     }
 
     public function detail_ajax($id)
@@ -151,6 +219,7 @@ class SuplierController extends Controller
             if (empty($insertData)) {
                 return response()->json([
                     'status' => false,
+                    'alert' => 'error',
                     'message' => 'Tidak ada data baru yang valid untuk diimport',
                     'info' => $allMessages
                 ], 422);
@@ -160,6 +229,7 @@ class SuplierController extends Controller
 
             $response = [
                 'status' => true,
+                'alert' => 'success',
                 'message' => 'Import data berhasil',
                 'inserted_count' => $insertedCount,
                 'skipped_count' => count($skippedData),
@@ -174,6 +244,7 @@ class SuplierController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
+                'alert' => 'error',
                 'message' => 'Terjadi kesalahan saat memproses file',
                 'error' => $e->getMessage()
             ], 500);

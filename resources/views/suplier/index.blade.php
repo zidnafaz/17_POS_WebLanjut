@@ -104,20 +104,41 @@
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
                                 window.LaravelDataTables["suplier-table"].ajax.reload();
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sukses',
-                                    text: 'Produk berhasil disimpan.',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
+                                if (res.alert && res.message) {
+                                    Swal.fire({
+                                        icon: res.alert,
+                                        title: res.alert === 'success' ? 'Sukses' : 'Error',
+                                        text: res.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                }
                             },
                             error: function(xhr) {
-                                Swal.fire('Error!', xhr.responseJSON?.message ||
-                                    'Gagal menyimpan data.', 'error');
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+                                window.LaravelDataTables["suplier-table"].ajax.reload();
+                                if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON
+                                    .message) {
+                                    Swal.fire({
+                                        icon: xhr.responseJSON.alert,
+                                        title: xhr.responseJSON.alert === 'success' ?
+                                            'Sukses' : 'Error',
+                                        text: xhr.responseJSON.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire('Error!',
+                                        'Gagal menyimpan data karena duplikat Kode Suplier.',
+                                        'error');
+                                }
                             }
                         });
                     });
+
+                    $(document).off('submit', '#form-import');
 
                     // Handle form import khusus
                     $(document).on('submit', '#form-import', function(e) {
@@ -140,15 +161,19 @@
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
 
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sukses',
-                                    text: response.message,
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    window.LaravelDataTables["suplier-table"].ajax.reload();
-                                });
+                                if (response.alert && response.message) {
+                                    Swal.fire({
+                                        icon: response.alert,
+                                        title: response.alert === 'success' ? 'Sukses' :
+                                            'Error',
+                                        text: response.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.LaravelDataTables["suplier-table"].ajax
+                                            .reload();
+                                    });
+                                }
                             },
                             error: function(xhr) {
                                 var modalEl = document.getElementById('myModal');
@@ -160,12 +185,23 @@
                                         activeElement.blur();
                                     }
                                 }
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: xhr.responseJSON?.message ||
-                                        'Gagal mengimport data'
-                                });
+                                if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON
+                                    .message) {
+                                    Swal.fire({
+                                        icon: xhr.responseJSON.alert,
+                                        title: xhr.responseJSON.alert === 'success' ?
+                                            'Sukses' : 'Error',
+                                        text: xhr.responseJSON.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: xhr.responseJSON.message
+                                    });
+                                }
                             },
                             complete: function() {
                                 submitBtn.prop('disabled', false).html(
@@ -179,21 +215,44 @@
                 });
         }
 
-        function editModal(id) {
-            modalAction('{{ url('suplier') }}/' + id + '/edit-ajax');
-        }
+        $(document).on('submit', '#formDeleteSuplier', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    var modalEl = document.getElementById('myModal');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
+                    window.LaravelDataTables["suplier-table"].ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Suplier berhasil dihapus.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Tidak dapat menghapus suplier karena ada data berkaitan.'
+                    });
+                }
+            });
+        });
 
-        // $(document).ready(function() {
-        //     // Tambah margin bawah pada tombol DataTable
-        //     $('.dt-buttons').addClass('mb-3');
+        $(document).ready(function() {
+            // Tambah margin bawah pada tombol DataTable
+            $('.dt-buttons').addClass('mb-3');
 
-        //     // Aktifkan tooltips
-        //     $('[data-toggle="tooltip"]').tooltip();
-
-        //     // Reload datatable on category filter change
-        //     $('#kategori_id').on('change', function() {
-        //         window.LaravelDataTables["suplier-table"].ajax.reload();
-        //     });
-        // });
+            // Aktifkan tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 @endpush

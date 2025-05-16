@@ -34,38 +34,64 @@
     </form>
 </div>
 
+@push('js')
 <script>
-    $(document).ready(function() {
-        $('#formCreateSuplier').submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            $.ajax({
-                url: form.attr('action'),
-                method: 'POST',
-                data: form.serialize(),
-                success: function(response) {
-                    var modalEl = document.getElementById('myModal');
-                    var modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) {
-                        modal.hide();
-                    }
-                    window.LaravelDataTables["suplier-table"].ajax.reload();
+    $('#formCreateSuplier').submit(function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let formData = form.serializeArray();
+
+        // Tambahkan _method jika belum ada
+        if (!formData.some(field => field.name === '_method')) {
+            formData.push({ name: '_method', value: 'PUT' });
+        }
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: $.param(formData),
+            success: function(response) {
+                if (response.status) {
+                    $('#myModal').modal('hide');
+                    window.LaravelDataTables["suplier-table"].ajax.reload(); // sesuaikan ID datatable
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
-                        text: 'Suplier berhasil ditambahkan.',
+                        text: response.message,
                         timer: 2000,
                         showConfirmButton: false
                     });
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: 'Terjadi kesalahan saat menyimpan data.'
+                } else {
+                    // Reset feedback
+                    let fields = ['kode_suplier', 'nama_suplier', 'no_telepon', 'alamat'];
+                    fields.forEach(field => {
+                        $('#' + field).removeClass('is-invalid');
+                        $('#error_' + field).text('');
                     });
+
+                    // Tampilkan error
+                    if (response.msgField) {
+                        for (const field in response.msgField) {
+                            $('#' + field).addClass('is-invalid');
+                            $('#error_' + field).text(response.msgField[field][0]);
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
+                    }
                 }
-            });
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: xhr.responseJSON?.message || 'Terjadi kesalahan saat memproses data.',
+                });
+            }
         });
     });
 </script>
+@endpush
