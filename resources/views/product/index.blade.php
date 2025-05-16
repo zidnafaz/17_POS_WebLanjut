@@ -112,20 +112,41 @@
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
                                 window.LaravelDataTables["product-table"].ajax.reload();
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sukses',
-                                    text: 'Produk berhasil disimpan.',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
+                                if (res.alert && res.message) {
+                                    Swal.fire({
+                                        icon: res.alert,
+                                        title: res.alert === 'success' ? 'Sukses' : 'Error',
+                                        text: res.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                }
                             },
                             error: function(xhr) {
-                                Swal.fire('Error!', xhr.responseJSON?.message ||
-                                    'Gagal menyimpan data.', 'error');
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+                                window.LaravelDataTables["product-table"].ajax.reload();
+                                if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON
+                                    .message) {
+                                    Swal.fire({
+                                        icon: xhr.responseJSON.alert,
+                                        title: xhr.responseJSON.alert === 'success' ?
+                                            'Sukses' : 'Error',
+                                        text: xhr.responseJSON.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire('Error!',
+                                        'Gagal menyimpan data karena duplikat Barang Kode.',
+                                        'error');
+                                }
                             }
                         });
                     });
+
+                    $(document).off('submit', '#form-import');
 
                     // Handle form import khusus
                     $(document).on('submit', '#form-import', function(e) {
@@ -148,15 +169,19 @@
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
 
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sukses',
-                                    text: response.message,
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    window.LaravelDataTables["product-table"].ajax.reload();
-                                });
+                                if (response.alert && response.message) {
+                                    Swal.fire({
+                                        icon: response.alert,
+                                        title: response.alert === 'success' ? 'Sukses' :
+                                            'Error',
+                                        text: response.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.LaravelDataTables["product-table"].ajax
+                                            .reload();
+                                    });
+                                }
                             },
                             error: function(xhr) {
                                 var modalEl = document.getElementById('myModal');
@@ -168,12 +193,23 @@
                                         activeElement.blur();
                                     }
                                 }
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: xhr.responseJSON?.message ||
-                                        'Gagal mengimport data'
-                                });
+                                if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON
+                                    .message) {
+                                    Swal.fire({
+                                        icon: xhr.responseJSON.alert,
+                                        title: xhr.responseJSON.alert === 'success' ?
+                                            'Sukses' : 'Error',
+                                        text: xhr.responseJSON.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: xhr.responseJSON.message
+                                    });
+                                }
                             },
                             complete: function() {
                                 submitBtn.prop('disabled', false).html(
@@ -185,10 +221,6 @@
                 .fail(function(xhr) {
                     Swal.fire('Error!', 'Gagal memuat form: ' + xhr.statusText, 'error');
                 });
-        }
-
-        function editModal(id) {
-            modalAction('{{ url('products') }}/' + id + '/edit-ajax');
         }
 
         $(document).ready(function() {

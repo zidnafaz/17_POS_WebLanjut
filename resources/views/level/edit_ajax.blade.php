@@ -84,7 +84,8 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Terjadi kesalahan saat mengupdate data.',
+                    text: response.message,
+                    showConfirmButton: true,
                     confirmButtonText: 'OK'
                 });
             }

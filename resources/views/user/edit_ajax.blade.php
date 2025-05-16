@@ -62,7 +62,8 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: 'Terjadi kesalahan saat mengubah data.'
+                        text: response.message,
+                        showConfirmButton: true
                     });
                 }
             });

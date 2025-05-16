@@ -40,3 +40,73 @@
         </div>
     </div>
 </form>
+
+@push('js')
+    <script>
+        $('#formEditProduct').submit(function(e) {
+            e.preventDefault();
+            let form = $(this);
+            let formData = form.serializeArray();
+
+            // Pastikan _method PUT dikirim
+            if (!formData.some(field => field.name === '_method')) {
+                formData.push({
+                    name: '_method',
+                    value: 'PUT'
+                });
+            }
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: $.param(formData),
+                success: function(response) {
+                    if (response.status) {
+                        $('#myModal').modal('hide');
+                        window.LaravelDataTables["product-table"].ajax
+                    .reload(); // sesuaikan ID datatable
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sukses',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        // Reset semua error feedback
+                        let fields = ['kategori_id', 'barang_kode', 'barang_nama', 'harga_beli',
+                            'harga_jual'
+                        ];
+                        fields.forEach(field => {
+                            $('#' + field).removeClass('is-invalid');
+                            $('#error_' + field).text('');
+                        });
+
+                        // Tampilkan pesan error validasi
+                        if (response.msgField) {
+                            for (const field in response.msgField) {
+                                $('#' + field).addClass('is-invalid');
+                                $('#error_' + field).text(response.msgField[field][0]);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message,
+                            });
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message ||
+                            'Terjadi kesalahan saat memproses data.',
+                        showConfirmButton: true
+                    });
+                }
+            });
+        });
+    </script>
+@endpush

@@ -125,16 +125,19 @@
                                 }
                             },
                             error: function(xhr) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+                                window.LaravelDataTables["user-table"].ajax.reload();
                                 if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON.message) {
                                     Swal.fire({
                                         icon: xhr.responseJSON.alert,
                                         title: xhr.responseJSON.alert === 'success' ? 'Sukses' : 'Error',
                                         text: xhr.responseJSON.message,
                                         timer: 2000,
-                                        showConfirmButton: false
                                     });
                                 } else {
-                                    Swal.fire('Error!', 'Gagal menyimpan data.', 'error');
+                                    Swal.fire('Error!', 'Username sudah digunakan', 'error');
                                 }
                             }
                         });

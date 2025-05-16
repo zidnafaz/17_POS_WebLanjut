@@ -53,7 +53,6 @@ class LevelController extends Controller
                 Log::error('Validation failed', $validator->errors()->toArray());
                 return response()->json([
                     'status' => false,
-                    'alert' => 'error',
                     'message' => 'Validasi Gagal',
                     'msgField' => $validator->errors(),
                 ]);
@@ -83,7 +82,6 @@ class LevelController extends Controller
         Log::warning('Invalid request in store_ajax');
         return response()->json([
             'status' => false,
-            'alert' => 'error',
             'message' => 'Request tidak valid'
         ], 400);
     }
@@ -99,7 +97,7 @@ class LevelController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'level_kode' => 'required|string|unique:m_level,level_kode,' . $id . ',level_id',
+                'level_kode' => 'required|string|max:255',
                 'level_nama' => 'required|string|max:100',
             ];
 
@@ -108,7 +106,6 @@ class LevelController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'alert' => 'error',
                     'message' => 'Validasi gagal.',
                     'msgField' => $validator->errors()
                 ]);
@@ -119,13 +116,11 @@ class LevelController extends Controller
                 $level->update($request->all());
                 return response()->json([
                     'status' => true,
-                    'alert' => 'success',
                     'message' => 'Data berhasil diupdate'
                 ]);
             } else {
                 return response()->json([
                     'status' => false,
-                    'alert' => 'error',
                     'message' => 'Data tidak ditemukan'
                 ]);
             }

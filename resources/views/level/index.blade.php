@@ -125,6 +125,10 @@
                                 }
                             },
                             error: function(xhr) {
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+                                window.LaravelDataTables["level-table"].ajax.reload();
                                 if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON
                                     .message) {
                                     Swal.fire({
@@ -136,7 +140,7 @@
                                         showConfirmButton: false
                                     });
                                 } else {
-                                    Swal.fire('Error!', 'Gagal menyimpan data.', 'error');
+                                    Swal.fire('Error!', 'Gagal menyimpan data karena duplikat Kode Level.', 'error');
                                 }
                             }
                         });
@@ -245,7 +249,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: 'Terjadi kesalahan saat menghapus data.'
+                        text: 'Tidak dapat menghapus level karena user dengan level ini masih ada.'
                     });
                 }
             });

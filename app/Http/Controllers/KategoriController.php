@@ -6,45 +6,147 @@ use App\DataTables\KategoriDataTable;
 use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 class KategoriController extends Controller
 {
     public function index(KategoriDataTable $dataTable)
     {
-        // $data = [
-        //     [
-        //         'kategori_kode' => 'KT006',
-        //         'kategori_nama' => 'Snack/Makanan Ringan',
-        //         'created_at' => now()
-        //     ],
-        // ];
-
-        // DB::table('m_kategori')->insert($data);
-
-        // $message = 'Insert data baru berhasil';
-        // return view('kategori', compact('message'));
-
-        // $row = DB::table('m_kategori')->where('kategori_kode', 'KT006')
-        //                                      ->update(['kategori_nama' => 'Camilan']);
-        // $message = 'Update data berhasil.  Jumlah data yang ditambahkan : ' . $row . ' baris';
-
-        // return view('kategori', compact('message'));
-
-        // $row = DB::table('m_kategori')->where('kategori_kode', 'KT006')->delete();
-        // $message = 'Update data berhasil.  Jumlah data yang dihapus : ' . $row . ' baris';
-
-        // return view('kategori', compact('message'));
-
-        // $data = DB::select('select * from m_kategori');
-        // return view('kategori', ['data' => $data]);
-
         return $dataTable->render('kategori.index');
     }
 
     public function import()
     {
         return view('kategori.import');
+    }
+
+    public function create_ajax()
+    {
+        return view('kategori.create_ajax');
+    }
+
+    public function store_ajax(Request $request)
+    {
+        Log::info('store_ajax called', $request->all());
+
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'kategori_kode' => 'required|string|max:255',
+                'kategori_nama' => 'required|string|max:255',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                Log::error('Validation failed', $validator->errors()->toArray());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors(),
+                ]);
+            }
+
+            try {
+                KategoriModel::create([
+                    'kategori_kode' => $request->kategori_kode,
+                    'kategori_nama' => $request->kategori_nama,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Exception in store ajax: ' . $e->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Gagal menyimpan data kategori',
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data level berhasil disimpan'
+            ]);
+        }
+
+        Log::warning('Invalid request in store_ajax');
+        return response()->json([
+            'status' => false,
+            'message' => 'Request tidak valid'
+        ], 400);
+    }
+
+    public function edit_ajax($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        return view('kategori.edit_ajax', ['kategori' => $kategori]);
+    }
+
+    public function update_ajax(Request $request, $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'kategori_kode' => 'required|string|max:255',
+                'kategori_nama' => 'required|string|max:255',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $kategori = KategoriModel::find($id);
+            if ($kategori) {
+                $kategori->update($request->all());
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan'
+                ]);
+            }
+        }
+        return redirect('/');
+    }
+
+    public function destroy($id)
+    {
+        //
+    }
+
+    public function confirm_ajax($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        return view('kategori.confirm_ajax', ['kategori' => $kategori]);
+    }
+
+    public function delete_ajax($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        $kategori->delete();
+        if ($kategori) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+    }
+
+    public function detail_ajax($id)
+    {
+        $kategori = KategoriModel::with('barang')->findOrFail($id);
+        $jumlahProduk = $kategori->barang->count();
+        return view('kategori.detail_ajax', compact('kategori', 'jumlahProduk'));
     }
 
     public function import_ajax(Request $request)
@@ -107,6 +209,7 @@ class KategoriController extends Controller
             if (empty($insertData)) {
                 return response()->json([
                     'status' => false,
+                    'alert' => 'error',
                     'message' => 'Tidak ada data baru yang valid untuk diimport',
                     'info' => $allMessages
                 ], 422);
@@ -117,6 +220,7 @@ class KategoriController extends Controller
 
             $response = [
                 'status' => true,
+                'alert' => 'success',
                 'message' => 'Import data berhasil',
                 'inserted_count' => $insertedCount,
                 'skipped_count' => count($skippedData),
@@ -132,6 +236,7 @@ class KategoriController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
+                'alert' => 'error',
                 'message' => 'Terjadi kesalahan saat memproses file',
                 'error' => $e->getMessage()
             ], 500);
@@ -207,72 +312,4 @@ class KategoriController extends Controller
 
         return $pdf->stream('Data Kategori ' . date('Y-m-d H:i:s') . '.pdf');
     }
-
-    public function create_ajax()
-    {
-        return view('kategori.create_ajax');
-    }
-
-    public function store_ajax(Request $request)
-    {
-        $request->validate([
-            'kategori_kode' => 'required|string|max:255',
-            'kategori_nama' => 'required|string|max:255',
-        ]);
-
-        KategoriModel::create([
-            'kategori_kode' => $request->kategori_kode,
-            'kategori_nama' => $request->kategori_nama,
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-
-    public function edit_ajax($id)
-    {
-        $kategori = KategoriModel::findOrFail($id);
-        return view('kategori.edit_ajax', compact('kategori'));
-    }
-
-    public function update_ajax(Request $request, $id)
-    {
-        $request->validate([
-            'kategori_kode' => 'required|string|max:255',
-            'kategori_nama' => 'required|string|max:255',
-        ]);
-
-        $kategori = KategoriModel::findOrFail($id);
-        $kategori->update([
-            'kategori_kode' => $request->kategori_kode,
-            'kategori_nama' => $request->kategori_nama,
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-
-    public function destroy($id)
-    {
-        //
-    }
-
-    public function confirm_ajax($id)
-    {
-        $kategori = KategoriModel::findOrFail($id);
-        return view('kategori.confirm_ajax', compact('kategori'));
-    }
-
-    public function delete_ajax($id)
-    {
-        $kategori = KategoriModel::findOrFail($id);
-        $kategori->delete();
-
-        return response()->json(['success' => true]);
-    }
-
-public function detail_ajax($id)
-{
-    $kategori = KategoriModel::with('barang')->findOrFail($id);
-    $jumlahProduk = $kategori->barang->count();
-    return view('kategori.detail_ajax', compact('kategori', 'jumlahProduk'));
-}
 }

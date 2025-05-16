@@ -158,7 +158,7 @@ class UserController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_id' => 'required|integer',
-                'username' => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
+                'username' => 'required|max:20|',
                 'nama' => 'required|max:100',
                 'password' => 'nullable|min:6|max:20'
             ];

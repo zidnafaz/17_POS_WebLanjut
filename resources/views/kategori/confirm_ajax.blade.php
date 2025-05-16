@@ -17,35 +17,3 @@
         </div>
     </form>
 </div>
-
-<script>
-    $(document).ready(function() {
-        $('#formDeleteKategori').submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            $.ajax({
-                url: form.attr('action'),
-                method: 'POST',
-                data: form.serialize(),
-                success: function(response) {
-                    $('#myModal').modal('hide');
-                    window.LaravelDataTables["kategori-table"].ajax.reload();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: 'Kategori berhasil dihapus.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: 'Terjadi kesalahan saat menghapus data.'
-                    });
-                }
-            });
-        });
-    });
-</script>

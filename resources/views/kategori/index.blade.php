@@ -103,20 +103,39 @@
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
                                 window.LaravelDataTables["kategori-table"].ajax.reload();
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sukses',
-                                    text: 'Kategori berhasil disimpan.',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
+                                if (res.alert && res.message) {
+                                    Swal.fire({
+                                        icon: res.alert,
+                                        title: res.alert === 'success' ? 'Sukses' : 'Error',
+                                        text: res.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                }
                             },
                             error: function(xhr) {
-                                Swal.fire('Error!', xhr.responseJSON?.message ||
-                                    'Gagal menyimpan data.', 'error');
+                                var modalEl = document.getElementById('myModal');
+                                var modal = bootstrap.Modal.getInstance(modalEl);
+                                modal.hide();
+                                window.LaravelDataTables["kategori-table"].ajax.reload();
+                                if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON
+                                    .message) {
+                                    Swal.fire({
+                                        icon: xhr.responseJSON.alert,
+                                        title: xhr.responseJSON.alert === 'success' ?
+                                            'Sukses' : 'Error',
+                                        text: xhr.responseJSON.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire('Error!', 'Gagal menyimpan data karena duplikat Kategori Kode.', 'error');
+                                }
                             }
                         });
                     });
+
+                    $(document).off('submit', '#form-import');
 
                     // Handle import form submit
                     $(document).on('submit', '#form-import', function(e) {
@@ -139,16 +158,19 @@
                                 var modal = bootstrap.Modal.getInstance(modalEl);
                                 modal.hide();
 
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sukses',
-                                    text: response.message,
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    window.LaravelDataTables["kategori-table"].ajax
-                                .reload();
-                                });
+                                if (response.alert && response.message) {
+                                    Swal.fire({
+                                        icon: response.alert,
+                                        title: response.alert === 'success' ? 'Sukses' :
+                                            'Error',
+                                        text: response.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.LaravelDataTables["kategori-table"].ajax
+                                            .reload();
+                                    });
+                                }
                             },
                             error: function(xhr) {
                                 var modalEl = document.getElementById('myModal');
@@ -160,12 +182,23 @@
                                         activeElement.blur();
                                     }
                                 }
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: xhr.responseJSON?.message ||
-                                        'Gagal mengimport data'
-                                });
+                                if (xhr.responseJSON && xhr.responseJSON.alert && xhr.responseJSON
+                                    .message) {
+                                    Swal.fire({
+                                        icon: xhr.responseJSON.alert,
+                                        title: xhr.responseJSON.alert === 'success' ?
+                                            'Sukses' : 'Error',
+                                        text: xhr.responseJSON.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: xhr.responseJSON.message
+                                    });
+                                }
                             },
                             complete: function() {
                                 submitBtn.prop('disabled', false).html(
@@ -178,6 +211,43 @@
                     Swal.fire('Error!', 'Gagal memuat form: ' + xhr.statusText, 'error');
                 });
         }
+
+        $(document).on('submit', '#formDeleteKategori', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    var modalEl = document.getElementById('myModal');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
+                    window.LaravelDataTables["kategori-table"].ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Kategori berhasil dihapus.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function(xhr) {
+                    var modalEl = document.getElementById('myModal');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Tidak dapat menghapus kategori karena barang dengan kategori ini masih ada.',
+                    });
+                }
+            });
+        });
 
         $(document).ready(function() {
             // Add margin to DataTable buttons

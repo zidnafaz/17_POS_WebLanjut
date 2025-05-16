@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -67,23 +68,57 @@ class ProductController extends Controller
 
     public function store_ajax(Request $request)
     {
-        $request->validate([
-            'kategori_id' => 'required|exists:m_kategori,kategori_id',
-            'barang_kode' => 'required|string|max:255',
-            'barang_nama' => 'required|string|max:255',
-            'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
-        ]);
+        Log::info('store_ajax called', $request->all());
 
-        BarangModel::create([
-            'kategori_id' => $request->kategori_id,
-            'barang_kode' => $request->barang_kode,
-            'barang_nama' => $request->barang_nama,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
-        ]);
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'kategori_id' => 'required|exists:m_kategori,kategori_id',
+                'barang_kode' => 'required|string|max:255',
+                'barang_nama' => 'required|string|max:255',
+                'harga_beli' => 'required|numeric',
+                'harga_jual' => 'required|numeric',
+            ];
 
-        return response()->json(['success' => true]);
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                Log::error('Validation failed', $validator->errors()->toArray());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors(),
+                ]);
+            }
+
+            try {
+                BarangModel::create([
+                    'kategori_id' => $request->kategori_id,
+                    'barang_kode' => $request->barang_kode,
+                    'barang_nama' => $request->barang_nama,
+                    'harga_beli' => $request->harga_beli,
+                    'harga_jual' => $request->harga_jual,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Exception in store ajax: ' . $e->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'alert' => 'error',
+                    'message' => 'Gagal menyimpan data product',
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'alert' => 'success',
+                'message' => 'Data product berhasil disimpan'
+            ]);
+        }
+
+        Log::warning('Invalid request in store_ajax');
+        return response()->json([
+            'status' => false,
+            'message' => 'Request tidak valid'
+        ], 400);
     }
 
     // public function edit_ajax($id)
@@ -95,24 +130,42 @@ class ProductController extends Controller
 
     public function update_ajax(Request $request, $id)
     {
-        $request->validate([
-            'kategori_id' => 'required|exists:m_kategori,kategori_id',
-            'barang_kode' => 'required|string|max:255',
-            'barang_nama' => 'required|string|max:255',
-            'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
-        ]);
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'kategori_id' => 'required|exists:m_kategori,kategori_id',
+                'barang_kode' => 'required|string|max:255',
+                'barang_nama' => 'required|string|max:255',
+                'harga_beli' => 'required|numeric',
+                'harga_jual' => 'required|numeric',
+            ];
 
-        $product = BarangModel::findOrFail($id);
-        $product->update([
-            'kategori_id' => $request->kategori_id,
-            'barang_kode' => $request->barang_kode,
-            'barang_nama' => $request->barang_nama,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
-        ]);
+            $validator = Validator::make($request->all(), $rules);
 
-        return response()->json(['success' => true]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $product = BarangModel::find($id);
+            if ($product) {
+                $product->update($request->all());
+                return response()->json([
+                    'status' => true,
+                    'alert' => 'success',
+                    'message' => 'Data berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'alert' => 'error',
+                    'message' => 'Data tidak ditemukan'
+                ]);
+            }
+        }
+        return redirect('/');
     }
 
     public function confirm_ajax($id)
@@ -126,7 +179,17 @@ class ProductController extends Controller
         $product = BarangModel::findOrFail($id);
         $product->delete();
 
-        return response()->json(['success' => true]);
+        if ($product) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
     }
 
     public function detail_ajax($id)
@@ -222,6 +285,7 @@ class ProductController extends Controller
             if (empty($insertData)) {
                 return response()->json([
                     'status' => false,
+                    'alert' => 'error',
                     'message' => 'Tidak ada data baru yang valid untuk diimport',
                     'info' => $allMessages
                 ], 422);
@@ -232,6 +296,7 @@ class ProductController extends Controller
 
             $response = [
                 'status' => true,
+                'alert' => 'success',
                 'message' => 'Import data berhasil',
                 'inserted_count' => $insertedCount,
                 'skipped_count' => count($skippedData),
@@ -247,6 +312,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
+                'alert' => 'error',
                 'message' => 'Terjadi kesalahan saat memproses file',
                 'error' => $e->getMessage()
             ], 500);
