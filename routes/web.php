@@ -31,9 +31,9 @@ Route::middleware(['auth'])->group(function () {
     // --------------------------
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    Route::get('/profile/{id}', [UserController::class, 'profile'])->name('user.profile');
-    Route::put('/profile/{id}', [UserController::class, 'updateProfile'])->name('user.update_profile');
-    Route::post('/profile/{id}/update', [UserController::class, 'updateProfile'])->name('user.update_profile');
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.update_profile');
+    Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('user.update_profile');
 
     // --------------------------
     // User - Only ADM

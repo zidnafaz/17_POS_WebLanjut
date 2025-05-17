@@ -18,7 +18,7 @@ class AuthorizeUser
         $user = $request->user();
 
         // Jika route adalah profile, izinkan akses ke profil sendiri
-        if ($request->routeIs('user.profile') && $request->route('id') == $user->user_id) {
+        if ($request->routeIs('user.profile')) {
             return $next($request);
         }
 

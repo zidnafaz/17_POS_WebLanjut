@@ -11,6 +11,7 @@ use App\DataTables\UserDataTable;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -385,24 +386,25 @@ class UserController extends Controller
         return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
     }
 
-    public function profile($id)
+    public function profile()
     {
-        $user = UserModel::with('level')->findOrFail($id);
+        $user = Auth::user()->load('level');
         $levels = LevelModel::all();
         return view('user.profile', compact('user', 'levels'));
     }
 
-    public function updateProfile(Request $request, $id)
+    public function updateProfile(Request $request)
     {
+        $user = Auth::user();
+
         $request->validate([
             'nama' => 'required|string|max:100',
-            'username' => 'required|string|max:20|unique:m_user,username,' . $id . ',user_id',
+            'username' => 'required|string|max:20|unique:m_user,username,' . $user->user_id . ',user_id',
             'level_id' => 'required|exists:m_level,level_id',
             'password' => 'nullable|min:6',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user = UserModel::findOrFail($id);
         $data = $request->only(['nama', 'username', 'level_id']);
 
         // Update password if provided
@@ -419,14 +421,14 @@ class UserController extends Controller
 
             // Store new picture
             $file = $request->file('profile_picture');
-            $filename = 'user_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'user_' . $user->user_id . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('public/profile_pictures', $filename);
             $data['profile_picture'] = $filename;
         }
 
         $user->update($data);
 
-        return redirect()->route('user.profile', $id)
+        return redirect()->route('user.profile')
             ->with('success', 'Profil berhasil diperbarui');
     }
 }

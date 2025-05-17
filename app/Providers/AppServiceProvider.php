@@ -51,17 +51,17 @@ class AppServiceProvider extends ServiceProvider
                             'icon' => 'fas fa-fw fa-search',
                         ],
 
-                        // Profile Section
+                        // Add separator above dashboard
+                        ['header' => ''],
+
+                        // Add profile menu above dashboard
                         [
-                            'type' => 'sidebar-profile',
-                            'text' => $user->nama,
-                            'url' => route('user.profile', $user->user_id),
-                            'icon' => $user->profile_picture
-                                ? asset('storage/profile_pictures/' . $user->profile_picture)
-                                : asset('vendor/adminlte/dist/img/avatar.png'),
-                            'username' => $user->username,
-                            'role' => $user->level->level_nama ?? 'Tanpa Level'
+                            'text' => 'Profile',
+                            'url' => route('user.profile'),
+                            'icon' => 'fas fa-fw fa-user',
                         ],
+
+                        ['header' => '_____________________________'],
 
                         // Dashboard selalu tampil
                         [
