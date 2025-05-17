@@ -51,6 +51,18 @@ class AppServiceProvider extends ServiceProvider
                             'icon' => 'fas fa-fw fa-search',
                         ],
 
+                        // Profile Section
+                        [
+                            'type' => 'sidebar-profile',
+                            'text' => $user->nama,
+                            'url' => route('user.profile', $user->user_id),
+                            'icon' => $user->profile_picture
+                                ? asset('storage/profile_pictures/' . $user->profile_picture)
+                                : asset('vendor/adminlte/dist/img/avatar.png'),
+                            'username' => $user->username,
+                            'role' => $user->level->level_nama ?? 'Tanpa Level'
+                        ],
+
                         // Dashboard selalu tampil
                         [
                             'text' => 'Dashboard',

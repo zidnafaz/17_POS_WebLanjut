@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use App\DataTables\UserDataTable;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -108,11 +109,11 @@ class UserController extends Controller
 
             if ($validator->fails()) {
                 Log::warning('Validation failed in store_ajax', $validator->errors()->toArray());
-            return response()->json([
-                'status' => false, // response status: false = gagal, true = berhasil
-                'message' => 'Validasi Gagal',
-                'msgField' => $validator->errors(), // pesan error validasi
-            ]);
+                return response()->json([
+                    'status' => false, // response status: false = gagal, true = berhasil
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors(), // pesan error validasi
+                ]);
             }
 
             try {
@@ -125,10 +126,10 @@ class UserController extends Controller
                 ]);
             } catch (\Exception $e) {
                 Log::error('Exception in store_ajax: ' . $e->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => 'Terjadi kesalahan saat menyimpan data.'
-            ]);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat menyimpan data.'
+                ]);
             }
 
             return response()->json([
@@ -167,11 +168,11 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
-            return response()->json([
-                'status' => false,    // respon json, true: berhasil, false: gagal
-                'message' => 'Validasi gagal.',
-                'msgField' => $validator->errors()  // menunjukkan field mana yang error
-            ]);
+                return response()->json([
+                    'status' => false,    // respon json, true: berhasil, false: gagal
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()  // menunjukkan field mana yang error
+                ]);
             }
 
             $check = UserModel::find($id);
@@ -382,5 +383,50 @@ class UserController extends Controller
         $pdf->setOption('chroot', base_path('public'));
 
         return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    public function profile($id)
+    {
+        $user = UserModel::with('level')->findOrFail($id);
+        $levels = LevelModel::all();
+        return view('user.profile', compact('user', 'levels'));
+    }
+
+    public function updateProfile(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'username' => 'required|string|max:20|unique:m_user,username,' . $id . ',user_id',
+            'level_id' => 'required|exists:m_level,level_id',
+            'password' => 'nullable|min:6',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = UserModel::findOrFail($id);
+        $data = $request->only(['nama', 'username', 'level_id']);
+
+        // Update password if provided
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture')) {
+            // Delete old picture if exists
+            if ($user->profile_picture) {
+                Storage::delete('public/profile_pictures/' . $user->profile_picture);
+            }
+
+            // Store new picture
+            $file = $request->file('profile_picture');
+            $filename = 'user_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/profile_pictures', $filename);
+            $data['profile_picture'] = $filename;
+        }
+
+        $user->update($data);
+
+        return redirect()->route('user.profile', $id)
+            ->with('success', 'Profil berhasil diperbarui');
     }
 }

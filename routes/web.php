@@ -31,6 +31,10 @@ Route::middleware(['auth'])->group(function () {
     // --------------------------
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
+    Route::get('/profile/{id}', [UserController::class, 'profile'])->name('user.profile');
+    Route::put('/profile/{id}', [UserController::class, 'updateProfile'])->name('user.update_profile');
+    Route::post('/profile/{id}/update', [UserController::class, 'updateProfile'])->name('user.update_profile');
+
     // --------------------------
     // User - Only ADM
     // --------------------------
@@ -83,14 +87,14 @@ Route::middleware(['auth'])->group(function () {
     // --------------------------
     // Suplier - ADM, MNG
     // --------------------------
-    Route::prefix('suplier')->middleware('authorize:ADM,MNG')->group(function () {        
-        Route::get('/', [SuplierController::class, 'index'])->name('suplier.index');        
-        Route::get('/create_ajax', [SuplierController::class, 'create_ajax'])->name('suplier.create_ajax');        
-        Route::post('/store_ajax', [SuplierController::class, 'store_ajax'])->name('suplier.store_ajax');        
-        Route::get('/{id}/edit_ajax', [SuplierController::class, 'edit_ajax'])->name('suplier.edit_ajax');        
-        Route::put('/{id}/update_ajax', [SuplierController::class, 'update_ajax'])->name('suplier.update_ajax');        
-        Route::get('/{id}/confirm_ajax', [SuplierController::class, 'confirm_ajax'])->name('suplier.confirm_ajax');        
-        Route::delete('/{id}/delete_ajax', [SuplierController::class, 'delete_ajax'])->name('suplier.delete_ajax');        
+    Route::prefix('suplier')->middleware('authorize:ADM,MNG')->group(function () {
+        Route::get('/', [SuplierController::class, 'index'])->name('suplier.index');
+        Route::get('/create_ajax', [SuplierController::class, 'create_ajax'])->name('suplier.create_ajax');
+        Route::post('/store_ajax', [SuplierController::class, 'store_ajax'])->name('suplier.store_ajax');
+        Route::get('/{id}/edit_ajax', [SuplierController::class, 'edit_ajax'])->name('suplier.edit_ajax');
+        Route::put('/{id}/update_ajax', [SuplierController::class, 'update_ajax'])->name('suplier.update_ajax');
+        Route::get('/{id}/confirm_ajax', [SuplierController::class, 'confirm_ajax'])->name('suplier.confirm_ajax');
+        Route::delete('/{id}/delete_ajax', [SuplierController::class, 'delete_ajax'])->name('suplier.delete_ajax');
         Route::get('/{id}/detail_ajax', [SuplierController::class, 'detail_ajax'])->name('suplier.detail_ajax');
 
         // Import and Export routes
